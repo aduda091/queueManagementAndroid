@@ -1,11 +1,15 @@
 package hr.unipu.duda.justintime;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,14 +26,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import hr.unipu.duda.justintime.model.Facility;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Ustanove");
 
-        final ArrayList<String> facilities = new ArrayList<>();
+        final ArrayList<Facility> facilities = new ArrayList<>();
         final ListView facilityListView = (ListView) findViewById(R.id.facilityListView);
 
         //Volley
@@ -41,9 +48,15 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(JSONArray response) {
                for(int i=0; i<response.length();i++) {
                    try {
-                       JSONObject facility = response.getJSONObject(i);
-                       String facilityName = facility.getString("name");
-                       facilities.add(facilityName);
+                       JSONObject facilityObject = response.getJSONObject(i);
+                       Facility facility = new Facility();
+                       facility.setId(facilityObject.getString("id"));
+                       facility.setName(facilityObject.getString("name"));
+//                       facility.setAddress(facilityObject.getString("address"));
+//                       facility.setTelephone(facilityObject.getString("telephone"));
+                       //todo:queues
+
+                       facilities.add(facility);
                    } catch (JSONException e) {
                        e.printStackTrace();
                    }
@@ -53,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(MainActivity.this, "Nisam uspio učitati json", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -61,7 +74,16 @@ public class MainActivity extends AppCompatActivity {
         queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
             public void onRequestFinished(Request<Object> request) {
-                facilityListView.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, facilities));
+                facilityListView.setAdapter(new ArrayAdapter<Facility>(MainActivity.this, android.R.layout.simple_list_item_1, facilities));
+            }
+        });
+
+        facilityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(MainActivity.this, FacilityDetailActivity.class);
+                intent.putExtra("id", facilities.get(i).getId());
+                startActivity(intent);
             }
         });
     }
