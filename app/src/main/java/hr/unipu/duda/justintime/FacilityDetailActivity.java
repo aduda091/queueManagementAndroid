@@ -1,5 +1,6 @@
 package hr.unipu.duda.justintime;
 
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,8 +60,10 @@ public class FacilityDetailActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(FacilityDetailActivity.this, "Greška prilikom dohvaćanja podataka", Toast.LENGTH_SHORT).show();
-                Log.d("JSON Error", "onErrorResponse: "+error.getMessage());
+                //Toast.makeText(FacilityDetailActivity.this, "Greška prilikom dohvaćanja podataka", Toast.LENGTH_SHORT).show();
+                Log.d("JSON Error", "onErrorResponse: " + error.getMessage());
+                AlertDialog.Builder builder = new AlertDialog.Builder(FacilityDetailActivity.this);
+                builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!").setNegativeButton("U redu", null).create().show();
             }
         });
 

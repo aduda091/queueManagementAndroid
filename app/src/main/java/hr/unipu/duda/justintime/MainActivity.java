@@ -1,6 +1,7 @@
 package hr.unipu.duda.justintime;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -66,8 +67,10 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Nisam uspio učitati json", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Nisam uspio učitati json", Toast.LENGTH_SHORT).show();
                 Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!").setNegativeButton("U redu", null).create().show();
             }
         });
 
