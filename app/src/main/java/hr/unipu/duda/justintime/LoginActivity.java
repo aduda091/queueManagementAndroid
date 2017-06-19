@@ -1,5 +1,7 @@
 package hr.unipu.duda.justintime;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -38,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         final EditText etUsername = (EditText) findViewById(R.id.etUsername);
         final EditText etPassword = (EditText) findViewById(R.id.etPassword);
+        final TextView tvRegisterLink = (TextView) findViewById(R.id.tvRegisterLink);
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +87,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        tvRegisterLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
 
     }
@@ -105,7 +117,13 @@ public class LoginActivity extends AppCompatActivity {
                     user.setMail(response.getString("mail"));
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setMessage("Hvala na prijavi, " +user.getFirstName() + " " + user.getLastName())
-                            .setPositiveButton("U redu", null)
+                            .setPositiveButton("U redu", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent = new Intent(LoginActivity.this, FacilityListActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
                             .create()
                             .show();
                     //todo: spremi učitane podatke u localStorage
@@ -123,6 +141,11 @@ public class LoginActivity extends AppCompatActivity {
                         + "\nResponse Data " + error.networkResponse.data
                         + "\nCause " + error.getCause()
                         + "\nmessage" + error.getMessage());
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                builder.setMessage("Neuspješna prijava, pokušajte ponovno")
+                        .setNegativeButton("U redu", null)
+                        .create()
+                        .show();
             }
         });
 
