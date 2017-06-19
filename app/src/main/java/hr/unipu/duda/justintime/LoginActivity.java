@@ -1,0 +1,131 @@
+package hr.unipu.duda.justintime;
+
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
+import hr.unipu.duda.justintime.model.User;
+import hr.unipu.duda.justintime.requests.LoginRequest;
+
+public class LoginActivity extends AppCompatActivity {
+    RequestQueue queue;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        queue = Volley.newRequestQueue(this);
+        final EditText etUsername = (EditText) findViewById(R.id.etUsername);
+        final EditText etPassword = (EditText) findViewById(R.id.etPassword);
+        Button btnLogin = (Button) findViewById(R.id.btnLogin);
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String username = etUsername.getText().toString();
+                final String password = etPassword.getText().toString();
+//                HashMap<String, String> params = new HashMap<String, String>();
+//                params.put("grant_type", "password");
+//                params.put("username", username);
+//                params.put("password", password);
+
+                LoginRequest loginRequest = new LoginRequest(username, password, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response", "onResponse: " +response.toString());
+                        try {
+                            String token = response.getString("access_token");
+                            getUserData(token);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("onError", "Error: " + error
+                                + "\nStatus Code " + error.networkResponse.statusCode
+                                + "\nResponse Data " + error.networkResponse.data
+                                + "\nCause " + error.getCause()
+                                + "\nmessage" + error.getMessage());
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                        builder.setMessage("Neuspješna prijava, pokušajte ponovno")
+                                .setNegativeButton("U redu", null)
+                                .create()
+                                .show();
+                    }
+                });
+
+                queue.add(loginRequest);
+
+            }
+        });
+
+
+
+    }
+
+    private void getUserData(String token) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        String url = "https://justin-time.herokuapp.com/user/me?access_token="+token;
+        Map<String, String> params = new HashMap<>();
+        params.put("access_token", token);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(params), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("/meResponse", "response: " +response.toString());
+                User user = new User();
+                try {
+                    user.setId(response.getString("id"));
+                    user.setFirstName(response.getString("firstName"));
+                    user.setLastName(response.getString("lastName"));
+                    user.setMail(response.getString("mail"));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    builder.setMessage("Hvala na prijavi, " +user.getFirstName() + " " + user.getLastName())
+                            .setPositiveButton("U redu", null)
+                            .create()
+                            .show();
+                    //todo: spremi učitane podatke u localStorage
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("onError", "Error: " + error
+                        + "\nStatus Code " + error.networkResponse.statusCode
+                        + "\nResponse Data " + error.networkResponse.data
+                        + "\nCause " + error.getCause()
+                        + "\nmessage" + error.getMessage());
+            }
+        });
+
+        queue.add(request);
+    }
+}
