@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(MainActivity.this, "Nisam uspio učitati json", Toast.LENGTH_SHORT).show();
+                Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
             }
         });
 
