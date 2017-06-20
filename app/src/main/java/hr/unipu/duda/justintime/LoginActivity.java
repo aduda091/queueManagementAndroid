@@ -1,5 +1,6 @@
 package hr.unipu.duda.justintime;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +34,7 @@ import hr.unipu.duda.justintime.requests.LoginRequest;
 
 public class LoginActivity extends AppCompatActivity {
     RequestQueue queue;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +46,20 @@ public class LoginActivity extends AppCompatActivity {
         final TextView tvRegisterLink = (TextView) findViewById(R.id.tvRegisterLink);
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
 
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Prijava u tijeku");
+        progressDialog.setCancelable(false);
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String username = etUsername.getText().toString();
                 final String password = etPassword.getText().toString();
+
+                if(!progressDialog.isShowing()) progressDialog.show();
+
+                //kroz loginRequest
 //                HashMap<String, String> params = new HashMap<String, String>();
 //                params.put("grant_type", "password");
 //                params.put("username", username);
@@ -74,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                                 + "\nCause " + error.getCause()
                                 + "\nmessage" + error.getMessage());
 
+                        if(progressDialog.isShowing()) progressDialog.dismiss();
                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                         builder.setMessage("Neuspješna prijava, pokušajte ponovno")
                                 .setNegativeButton("U redu", null)
@@ -126,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                             })
                             .create()
                             .show();
+                    if(progressDialog.isShowing())progressDialog.dismiss();
                     //todo: spremi učitane podatke u localStorage
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -141,6 +154,8 @@ public class LoginActivity extends AppCompatActivity {
                         + "\nResponse Data " + error.networkResponse.data
                         + "\nCause " + error.getCause()
                         + "\nmessage" + error.getMessage());
+                if(progressDialog.isShowing()) progressDialog.dismiss();
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                 builder.setMessage("Neuspješna prijava, pokušajte ponovno")
                         .setNegativeButton("U redu", null)
