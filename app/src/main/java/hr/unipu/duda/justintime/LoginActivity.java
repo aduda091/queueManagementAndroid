@@ -1,5 +1,6 @@
 package hr.unipu.duda.justintime;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,6 +51,15 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Prijava u tijeku");
         progressDialog.setCancelable(false);
+
+        if(getIntent().getExtras() != null) {
+            //korisnik se upravo registrirao
+            //ako registracija vraća token, možemo se ulogirati pomoću njega izravno?
+            //zasad samo ispuniti polja za login
+            etUsername.setText(getIntent().getStringExtra("username"));
+            etPassword.setText(getIntent().getStringExtra("password"));
+
+        }
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,8 +138,8 @@ public class LoginActivity extends AppCompatActivity {
                     user.setLastName(response.getString("lastName"));
                     user.setMail(response.getString("mail"));
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                    builder.setMessage("Hvala na prijavi, " +user.getFirstName() + " " + user.getLastName())
-                            .setPositiveButton("U redu", new DialogInterface.OnClickListener() {
+                    builder.setMessage("Hvala na prijavi, " +user.getFirstName() + " " + user.getLastName() + "!")
+                            .setPositiveButton("Nema na čemu", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Intent intent = new Intent(LoginActivity.this, FacilityListActivity.class);
