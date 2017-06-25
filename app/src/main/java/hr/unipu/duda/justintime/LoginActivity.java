@@ -1,32 +1,27 @@
 package hr.unipu.duda.justintime;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,8 +49,6 @@ public class LoginActivity extends AppCompatActivity {
 
         if(getIntent().getExtras() != null) {
             //korisnik se upravo registrirao
-            //ako registracija vraća token, možemo se ulogirati pomoću njega izravno?
-            //zasad samo ispuniti polja za login
             etUsername.setText(getIntent().getStringExtra("username"));
             etPassword.setText(getIntent().getStringExtra("password"));
 
@@ -69,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(!progressDialog.isShowing()) progressDialog.show();
 
-                //kroz loginRequest
+                //kroz loginRequest i url
 //                HashMap<String, String> params = new HashMap<String, String>();
 //                params.put("grant_type", "password");
 //                params.put("username", username);
