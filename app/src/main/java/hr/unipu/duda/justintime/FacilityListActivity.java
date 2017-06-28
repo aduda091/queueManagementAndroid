@@ -79,8 +79,8 @@ public class FacilityListActivity extends AppCompatActivity {
         facilityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(FacilityListActivity.this, FacilityDetailActivity.class);
-                intent.putExtra("id", facilities.get(i).getId());
+                Intent intent = new Intent(FacilityListActivity.this, QueueListActivity.class);
+                //intent.putExtra("id", facilities.get(i).getId());
                 startActivity(intent);
             }
         });

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     >
 
     <TextView
@@ -13,17 +14,17 @@
         android:text="Ustanova"
         android:textSize="25sp"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="20dp"
         />
 
     <ImageView
         android:id="@+id/imageButtonFacilityInfo"
-        android:layout_width="35dp"
+        android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
         android:src="@drawable/info_black"
         android:textAlignment="center"
+        android:layout_marginRight="-15dp"
         android:contentDescription="info link" />
 
 </RelativeLayout>
