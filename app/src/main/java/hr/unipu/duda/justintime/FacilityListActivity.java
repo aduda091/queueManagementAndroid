@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import hr.unipu.duda.justintime.adapters.FacilityArrayAdapter;
 import hr.unipu.duda.justintime.model.Facility;
 
 public class FacilityListActivity extends AppCompatActivity {
@@ -49,9 +50,6 @@ public class FacilityListActivity extends AppCompatActivity {
                        Facility facility = new Facility();
                        facility.setId(facilityObject.getString("id"));
                        facility.setName(facilityObject.getString("name"));
-//                       facility.setAddress(facilityObject.getString("address"));
-//                       facility.setTelephone(facilityObject.getString("telephone"));
-                       //todo:queues
 
                        facilities.add(facility);
                    } catch (JSONException e) {
@@ -74,7 +72,7 @@ public class FacilityListActivity extends AppCompatActivity {
         queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
             public void onRequestFinished(Request<Object> request) {
-                facilityListView.setAdapter(new ArrayAdapter<Facility>(FacilityListActivity.this, android.R.layout.simple_list_item_1, facilities));
+                facilityListView.setAdapter(new FacilityArrayAdapter(FacilityListActivity.this, 0, facilities));
             }
         });
 

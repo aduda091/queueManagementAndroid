@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvFacilityListName"
+        android:text="Ustanova"
+        android:textSize="25sp"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        />
+
+    <ImageView
+        android:id="@+id/imageButtonFacilityInfo"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/info_black"
+        android:textAlignment="center"
+        android:contentDescription="info link" />
+
+</RelativeLayout>

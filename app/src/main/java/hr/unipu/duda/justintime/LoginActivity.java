@@ -82,11 +82,16 @@ public class LoginActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("onError", "Error: " + error
-                                + "\nStatus Code " + error.networkResponse.statusCode
-                                + "\nResponse Data " + error.networkResponse.data
-                                + "\nCause " + error.getCause()
-                                + "\nmessage" + error.getMessage());
+
+                        try {
+                            Log.d("onError", "Error: " + error
+                                    + "\nStatus Code " + error.networkResponse.statusCode
+                                    + "\nResponse Data " + error.networkResponse.data
+                                    + "\nCause " + error.getCause()
+                                    + "\nmessage" + error.getMessage());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                         if(progressDialog.isShowing()) progressDialog.dismiss();
                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
