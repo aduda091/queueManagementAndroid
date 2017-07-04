@@ -1,5 +1,6 @@
 package hr.unipu.duda.justintime;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +17,10 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
 
-public class FacilityDetailActivity extends AppCompatActivity {
+public class FacilityDetailActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,4 +77,8 @@ public class FacilityDetailActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

@@ -3,6 +3,7 @@ package hr.unipu.duda.justintime;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class RegisterActivity extends AppCompatActivity {
+import hr.unipu.duda.justintime.fragments.NavigationFragment;
+
+public class RegisterActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
     EditText etName;
     EditText etLastName;
     EditText etEmail;
@@ -148,6 +151,11 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

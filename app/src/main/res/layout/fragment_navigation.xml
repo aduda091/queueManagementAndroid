@@ -7,7 +7,7 @@
     >
 
     <Button
-        android:id="@+id/navHome"
+        android:id="@+id/navFacilities"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         android:textSize="12sp" />
 
     <Button
-        android:id="@+id/navNumber"
+        android:id="@+id/navReservations"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

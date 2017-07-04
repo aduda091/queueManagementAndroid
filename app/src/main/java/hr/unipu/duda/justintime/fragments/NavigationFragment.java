@@ -1,13 +1,16 @@
 package hr.unipu.duda.justintime.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import hr.unipu.duda.justintime.FacilityListActivity;
 import hr.unipu.duda.justintime.R;
 
 /**
@@ -19,6 +22,10 @@ import hr.unipu.duda.justintime.R;
  * create an instance of this fragment.
  */
 public class NavigationFragment extends Fragment {
+
+    Button navFacilities, navReservations, navProfile;
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,13 +66,28 @@ public class NavigationFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_navigation, container, false);
+        View view = inflater.inflate(R.layout.fragment_navigation, container, false);
+        navFacilities = (Button) view.findViewById(R.id.navFacilities);
+        navReservations = (Button) view.findViewById(R.id.navReservations);
+        navProfile = (Button) view.findViewById(R.id.navProfile);
+
+        navFacilities.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), FacilityListActivity.class);
+                startActivity(intent);
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
