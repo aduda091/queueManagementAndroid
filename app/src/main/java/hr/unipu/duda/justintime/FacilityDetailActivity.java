@@ -1,5 +1,7 @@
 package hr.unipu.duda.justintime;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -22,6 +24,8 @@ import hr.unipu.duda.justintime.model.Facility;
 
 public class FacilityDetailActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +36,12 @@ public class FacilityDetailActivity extends AppCompatActivity implements Navigat
         final TextView facilityAddressTextView = (TextView) findViewById(R.id.facilityAddressTextView);
         final TextView facilityTelephoneTextView = (TextView) findViewById(R.id.facilityTelephoneTextView);
         final TextView facilityMailTextView = (TextView) findViewById(R.id.facilityMailTextView);
+
+        progressDialog = new ProgressDialog(FacilityDetailActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
+        progressDialog.setCancelable(false);
+        if(!progressDialog.isShowing()) progressDialog.show();
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://justin-time.herokuapp.com/facility/" +getIntent().getStringExtra("id");
@@ -57,8 +67,16 @@ public class FacilityDetailActivity extends AppCompatActivity implements Navigat
             public void onErrorResponse(VolleyError error) {
                 //Toast.makeText(FacilityDetailActivity.this, "Greška prilikom dohvaćanja podataka", Toast.LENGTH_SHORT).show();
                 Log.d("JSON Error", "onErrorResponse: " + error.getMessage());
+                if(progressDialog.isShowing()) progressDialog.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(FacilityDetailActivity.this);
-                builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!").setNegativeButton("U redu", null).create().show();
+                builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!")
+                        .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                recreate();
+                            }
+                        })
+                        .create().show();
             }
         });
 
@@ -73,6 +91,8 @@ public class FacilityDetailActivity extends AppCompatActivity implements Navigat
                 facilityAddressTextView.setText("Adresa: " + facility.getAddress());
                 facilityTelephoneTextView.setText("Telefon: " + facility.getTelephone());
                 facilityMailTextView.setText("Mail: " + facility.getMail());
+
+                if(progressDialog.isShowing()) progressDialog.dismiss();
             }
         });
     }

@@ -1,5 +1,7 @@
 package hr.unipu.duda.justintime;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
@@ -30,6 +32,8 @@ import hr.unipu.duda.justintime.model.Facility;
 
 public class FacilityListActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +42,12 @@ public class FacilityListActivity extends AppCompatActivity implements Navigatio
 
         final ArrayList<Facility> facilities = new ArrayList<>();
         final ListView facilityListView = (ListView) findViewById(R.id.facilityListView);
+
+        progressDialog = new ProgressDialog(FacilityListActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
+        progressDialog.setCancelable(false);
+        if(!progressDialog.isShowing()) progressDialog.show();
 
         //Volley
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -65,8 +75,16 @@ public class FacilityListActivity extends AppCompatActivity implements Navigatio
             public void onErrorResponse(VolleyError error) {
                 //Toast.makeText(FacilityListActivity.this, "Nisam uspio učitati json", Toast.LENGTH_SHORT).show();
                 Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
+                if(progressDialog.isShowing()) progressDialog.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(FacilityListActivity.this);
-                builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!").setNegativeButton("U redu", null).create().show();
+                builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!")
+                        .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                recreate();
+                            }
+                        })
+                        .create().show();
             }
         });
 
@@ -74,6 +92,7 @@ public class FacilityListActivity extends AppCompatActivity implements Navigatio
         queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
             public void onRequestFinished(Request<Object> request) {
+                if(progressDialog.isShowing()) progressDialog.dismiss();
                 facilityListView.setAdapter(new FacilityArrayAdapter(FacilityListActivity.this, 0, facilities));
             }
         });
