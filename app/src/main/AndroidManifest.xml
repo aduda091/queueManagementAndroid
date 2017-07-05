@@ -11,7 +11,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity android:name=".FacilityListActivity" />
-        <activity android:name=".FacilityDetailActivity" />
+        <activity android:name=".FacilityDetailActivity" android:parentActivityName=".FacilityListActivity" ></activity>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,8 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".QueueListActivity"></activity>
+        <activity android:name=".RegisterActivity" android:parentActivityName=".LoginActivity"></activity>
+        <activity android:name=".QueueListActivity" android:parentActivityName=".FacilityListActivity"></activity>
     </application>
 
 </manifest>
