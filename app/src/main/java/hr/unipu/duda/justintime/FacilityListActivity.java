@@ -101,7 +101,8 @@ public class FacilityListActivity extends AppCompatActivity implements Navigatio
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(FacilityListActivity.this, QueueListActivity.class);
-                //intent.putExtra("id", facilities.get(i).getId());
+                intent.putExtra("id", facilities.get(i).getId());
+                intent.putExtra("name", facilities.get(i).getName());
                 startActivity(intent);
             }
         });

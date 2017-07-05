@@ -86,7 +86,7 @@ public class FacilityDetailActivity extends AppCompatActivity implements Navigat
         queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
             public void onRequestFinished(Request<Object> request) {
-                setTitle(facility.getName());
+                setTitle(facility.getName() + " - detalji");
                 facilityNameTextView.setText(facility.getName());
                 facilityAddressTextView.setText("Adresa: " + facility.getAddress());
                 facilityTelephoneTextView.setText("Telefon: " + facility.getTelephone());

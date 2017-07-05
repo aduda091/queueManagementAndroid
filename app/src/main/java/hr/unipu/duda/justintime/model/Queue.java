@@ -46,4 +46,9 @@ public class Queue {
     public void setUsersInQueue(String[] usersInQueue) {
         this.usersInQueue = usersInQueue;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
