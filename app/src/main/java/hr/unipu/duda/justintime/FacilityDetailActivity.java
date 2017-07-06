@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,6 +28,7 @@ import hr.unipu.duda.justintime.model.Facility;
 public class FacilityDetailActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
 
     ProgressDialog progressDialog;
+    private static final String API_KEY = "AIzaSyAPTblfWC1PKNfwegGdhPTSTDSaX1rbJl8";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class FacilityDetailActivity extends AppCompatActivity implements Navigat
         final TextView facilityAddressTextView = (TextView) findViewById(R.id.facilityAddressTextView);
         final TextView facilityTelephoneTextView = (TextView) findViewById(R.id.facilityTelephoneTextView);
         final TextView facilityMailTextView = (TextView) findViewById(R.id.facilityMailTextView);
+        final WebView webView = (WebView) findViewById(R.id.facilityWebView);
 
         progressDialog = new ProgressDialog(FacilityDetailActivity.this);
         progressDialog.setIndeterminate(true);
@@ -92,7 +97,20 @@ public class FacilityDetailActivity extends AppCompatActivity implements Navigat
                 facilityTelephoneTextView.setText("Telefon: " + facility.getTelephone());
                 facilityMailTextView.setText("Mail: " + facility.getMail());
 
+                final String urlAdress = facility.getAddress().replace(" ", "+") + ",+52100,+Pula";
+                //Google static map api
+                webView.loadUrl("https://maps.googleapis.com/maps/api/staticmap?center="+ urlAdress + "&markers="+urlAdress +"&zoom=16&size=400x400&key="+API_KEY);
                 if(progressDialog.isShowing()) progressDialog.dismiss();
+
+                //dugi klik na kartu vjerojatno otvara google maps aplikaciju - testirati
+                Toast.makeText(FacilityDetailActivity.this, "Dugi dodir na kartu otvara detaljniji prikaz", Toast.LENGTH_SHORT).show();
+                webView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        webView.loadUrl("https://www.google.hr/maps/place/" + urlAdress);
+                        return true;
+                    }
+                });
             }
         });
     }
