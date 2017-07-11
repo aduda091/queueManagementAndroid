@@ -1,4 +1,4 @@
-package hr.unipu.duda.justintime;
+package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -14,21 +14,19 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import hr.unipu.duda.justintime.adapters.FacilityArrayAdapter;
+import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
 
-public class QueueListActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
+public class QueueListActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
     Facility facility;
@@ -97,11 +95,6 @@ public class QueueListActivity extends AppCompatActivity implements NavigationFr
                 queueListView.setAdapter(new ArrayAdapter<Queue>(QueueListActivity.this, android.R.layout.simple_list_item_1, facility.getQueues()));
             }
         });
-
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
     }
 }

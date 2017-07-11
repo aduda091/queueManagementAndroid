@@ -1,4 +1,4 @@
-package hr.unipu.duda.justintime;
+package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -18,19 +18,16 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
+import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.fragments.NavigationFragment;
 
-public class RegisterActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
+public class RegisterActivity extends AppCompatActivity {
     EditText etName;
     EditText etLastName;
     EditText etEmail;
@@ -151,11 +148,6 @@ public class RegisterActivity extends AppCompatActivity implements NavigationFra
             }
         });
 
-
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
     }
 }

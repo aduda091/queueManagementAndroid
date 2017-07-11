@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import hr.unipu.duda.justintime.FacilityDetailActivity;
+import hr.unipu.duda.justintime.activities.FacilityDetailActivity;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.model.Facility;
 

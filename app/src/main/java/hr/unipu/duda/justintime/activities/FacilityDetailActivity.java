@@ -1,7 +1,8 @@
-package hr.unipu.duda.justintime;
+package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -22,10 +23,11 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
 
-public class FacilityDetailActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
+public class FacilityDetailActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
     private static final String API_KEY = "AIzaSyAPTblfWC1PKNfwegGdhPTSTDSaX1rbJl8";
@@ -97,12 +99,39 @@ public class FacilityDetailActivity extends AppCompatActivity implements Navigat
                 facilityTelephoneTextView.setText("Telefon: " + facility.getTelephone());
                 facilityMailTextView.setText("Mail: " + facility.getMail());
 
+                //automatsko biranje broja telefona ustanove
+                facilityTelephoneTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + facility.getTelephone()));
+                        startActivity(intent);
+                    }
+                });
+
+                //slanje maila ustanovi - todo: testirati na uređaju jer emulator nema mail klijent
+                facilityMailTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_SENDTO);
+                        intent.setData(Uri.parse("mailto:"));
+                        intent.setType("*/*");
+                        intent.putExtra(Intent.EXTRA_EMAIL, facility.getMail());
+                        if (intent.resolveActivity(getPackageManager()) != null) {
+                            startActivity(intent);
+                        }
+                    }
+                });
+
+
+
+                //karta
                 final String urlAdress = facility.getAddress().replace(" ", "+") + ",+52100,+Pula";
                 //Google static map api
                 webView.loadUrl("https://maps.googleapis.com/maps/api/staticmap?center="+ urlAdress + "&markers="+urlAdress +"&zoom=16&size=400x400&key="+API_KEY);
                 if(progressDialog.isShowing()) progressDialog.dismiss();
 
-                //dugi klik na kartu vjerojatno otvara google maps aplikaciju - testirati
+                //dugi klik na kartu otvara google maps aplikaciju - testirano i na emulatoru
                 Toast.makeText(FacilityDetailActivity.this, "Dugi dodir na kartu otvara detaljniji prikaz", Toast.LENGTH_SHORT).show();
                 webView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -115,8 +144,4 @@ public class FacilityDetailActivity extends AppCompatActivity implements Navigat
         });
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 }

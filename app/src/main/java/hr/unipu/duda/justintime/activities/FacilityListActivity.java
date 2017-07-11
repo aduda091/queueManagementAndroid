@@ -1,4 +1,4 @@
-package hr.unipu.duda.justintime;
+package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -26,11 +25,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.adapters.FacilityArrayAdapter;
 import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
 
-public class FacilityListActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
+public class FacilityListActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
@@ -106,10 +106,5 @@ public class FacilityListActivity extends AppCompatActivity implements Navigatio
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

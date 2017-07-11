@@ -1,4 +1,4 @@
-package hr.unipu.duda.justintime;
+package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -26,11 +26,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.User;
 import hr.unipu.duda.justintime.requests.LoginRequest;
 
-public class LoginActivity extends AppCompatActivity implements NavigationFragment.OnFragmentInteractionListener {
+public class LoginActivity extends AppCompatActivity {
     RequestQueue queue;
     ProgressDialog progressDialog;
     @Override
@@ -175,10 +176,5 @@ public class LoginActivity extends AppCompatActivity implements NavigationFragme
         });
 
         queue.add(request);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }
