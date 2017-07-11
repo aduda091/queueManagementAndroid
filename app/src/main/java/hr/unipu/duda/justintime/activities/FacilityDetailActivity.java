@@ -109,17 +109,15 @@ public class FacilityDetailActivity extends AppCompatActivity {
                     }
                 });
 
-                //slanje maila ustanovi - todo: testirati na uređaju jer emulator nema mail klijent
+                //slanje maila ustanovi
                 facilityMailTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(Intent.ACTION_SENDTO);
                         intent.setData(Uri.parse("mailto:"));
-                        intent.setType("*/*");
-                        intent.putExtra(Intent.EXTRA_EMAIL, facility.getMail());
-                        if (intent.resolveActivity(getPackageManager()) != null) {
-                            startActivity(intent);
-                        }
+                        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{facility.getMail()});
+                        intent.putExtra(Intent.EXTRA_SUBJECT, facility.getName() + " - upit");
+                        startActivity(Intent.createChooser(intent, "Pošaljite e-mail ustanovi..."));
                     }
                 });
 

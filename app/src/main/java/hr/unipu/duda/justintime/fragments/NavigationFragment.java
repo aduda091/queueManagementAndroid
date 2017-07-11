@@ -1,26 +1,20 @@
 package hr.unipu.duda.justintime.fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import hr.unipu.duda.justintime.activities.FacilityListActivity;
 import hr.unipu.duda.justintime.R;
+import hr.unipu.duda.justintime.activities.FacilityListActivity;
+import hr.unipu.duda.justintime.activities.LoginActivity;
+import hr.unipu.duda.justintime.activities.ProfileActivity;
+import hr.unipu.duda.justintime.util.UserController;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NavigationFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NavigationFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class NavigationFragment extends Fragment {
 
     Button navFacilities, navReservations, navProfile;
@@ -56,6 +50,22 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), FacilityListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //gumb za postavke profila
+        navProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                if(UserController.getInstance().isRemembered()) {
+                    //korisnik je prijavljen
+                    intent = new Intent(getActivity(), ProfileActivity.class);
+                } else {
+                    //korisnik nije prijavljen - odvedimo ga na zaslon prijave
+                    intent = new Intent(getActivity(), LoginActivity.class);
+                }
                 startActivity(intent);
             }
         });

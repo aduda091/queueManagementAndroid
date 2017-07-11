@@ -62,4 +62,14 @@ public class UserController extends Application{
     public boolean isRemembered() {
         return sharedPreferences.contains(MAIL);
     }
+
+    public void logout() {
+        editor = sharedPreferences.edit();
+        editor.remove(MAIL);
+        editor.remove(PASSWORD);
+        editor.remove(FIRSTNAME);
+        editor.remove(LASTNAME);
+        editor.remove(TOKEN);
+        editor.apply();
+    }
 }

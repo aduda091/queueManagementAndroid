@@ -28,6 +28,7 @@
         <activity
             android:name=".activities.QueueListActivity"
             android:parentActivityName=".activities.FacilityListActivity" />
+        <activity android:name=".activities.ProfileActivity"></activity>
     </application>
 
 </manifest>
