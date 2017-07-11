@@ -3,7 +3,6 @@ package hr.unipu.duda.justintime.activities;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,9 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import hr.unipu.duda.justintime.R;
-import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.User;
 import hr.unipu.duda.justintime.requests.LoginRequest;
+import hr.unipu.duda.justintime.util.UserController;
 
 public class LoginActivity extends AppCompatActivity {
     RequestQueue queue;
@@ -57,6 +56,13 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
+        if(UserController.getInstance().isRemembered()) {
+            //korisnički podaci su već spremljeni
+            User user = UserController.getInstance().getUser();
+            etUsername.setText(user.getMail());
+            etPassword.setText(user.getPassword());
+        }
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d("response", "onResponse: " +response.toString());
                         try {
                             String token = response.getString("access_token");
-                            getUserData(token);
+                            getUserData(token, password);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -122,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void getUserData(String token) {
+    private void getUserData(final String token, final String password) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         String url = "https://justin-time.herokuapp.com/user/me?access_token="+token;
@@ -138,6 +144,8 @@ public class LoginActivity extends AppCompatActivity {
                     user.setFirstName(response.getString("firstName"));
                     user.setLastName(response.getString("lastName"));
                     user.setMail(response.getString("mail"));
+                    user.setPassword(password);
+                    user.setToken(token);
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setMessage("Hvala na prijavi, " +user.getFirstName() + " " + user.getLastName() + "!")
                             .setPositiveButton("Nema na čemu", new DialogInterface.OnClickListener() {
@@ -150,7 +158,8 @@ public class LoginActivity extends AppCompatActivity {
                             .create()
                             .show();
                     if(progressDialog.isShowing())progressDialog.dismiss();
-                    //todo: spremi učitane podatke u localStorage
+                    //spremi učitane podatke u localStorage
+                    UserController.getInstance().saveUser(user);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
