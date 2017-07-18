@@ -8,8 +8,10 @@ public class Queue {
     private String id;
     private String name;
     private String[] usersInQueue;
+    private int priority;
 
     public Queue() {
+        priority = (int) (Math.random()*10)+1;
     }
 
     public Queue(String id, String name, String[] usersInQueue) {
@@ -47,6 +49,13 @@ public class Queue {
         this.usersInQueue = usersInQueue;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
     @Override
     public String toString() {
         return name;

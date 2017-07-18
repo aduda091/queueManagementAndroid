@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import hr.unipu.duda.justintime.R;
+import hr.unipu.duda.justintime.adapters.QueueArrayAdapter;
 import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
@@ -92,7 +93,7 @@ public class QueueListActivity extends AppCompatActivity {
             @Override
             public void onRequestFinished(Request<Object> request) {
                 if(progressDialog.isShowing()) progressDialog.dismiss();
-                queueListView.setAdapter(new ArrayAdapter<Queue>(QueueListActivity.this, android.R.layout.simple_list_item_1, facility.getQueues()));
+                queueListView.setAdapter(new QueueArrayAdapter(QueueListActivity.this, 0, facility.getQueues()));
             }
         });
 
