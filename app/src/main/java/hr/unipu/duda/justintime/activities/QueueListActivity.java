@@ -31,12 +31,12 @@ public class QueueListActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
     Facility facility;
+    RequestQueue volleyQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue_list);
-
         facility = new Facility();
         facility.setId(getIntent().getStringExtra("id"));
         facility.setName(getIntent().getStringExtra("name"));
@@ -51,7 +51,7 @@ public class QueueListActivity extends AppCompatActivity {
         if(!progressDialog.isShowing()) progressDialog.show();
 
         //Volley
-        RequestQueue volleyQueue = Volley.newRequestQueue(this);
+        volleyQueue = Volley.newRequestQueue(this);
         String url = "https://justin-time.herokuapp.com/facility/" +facility.getId();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -97,5 +97,33 @@ public class QueueListActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    private int getPriority(String queueId) {
+        String url = "https://justin-time.herokuapp.com/queue/" + queueId;
+        Log.d("getPriority", "url: " + url);
+        final int[] priority = {0};
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    priority[0] = response.getInt("priority");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("getPriority", "onErrorResponse: " + error.networkResponse.statusCode);
+                priority[0] = 0;
+            }
+        });
+
+        volleyQueue.add(request);
+
+        return 1;
     }
 }
