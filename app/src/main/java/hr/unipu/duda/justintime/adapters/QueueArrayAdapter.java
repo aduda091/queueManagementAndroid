@@ -38,9 +38,12 @@ public class QueueArrayAdapter extends ArrayAdapter<Queue> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final Queue queue = queues.get(position);
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.queue_item, null);
-
+        //optimizacija
+        View view = convertView;
+        if(view == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.queue_item, null);
+        }
         TextView nameView = (TextView) view.findViewById(R.id.tvQueueListName);
         nameView.setText(queue.getName());
 

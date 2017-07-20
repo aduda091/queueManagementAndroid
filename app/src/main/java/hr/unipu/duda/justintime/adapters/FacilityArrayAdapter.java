@@ -37,9 +37,11 @@ public class FacilityArrayAdapter extends ArrayAdapter<Facility> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final Facility facility = facilities.get(position);
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.facility_item, null);
-
+        View view = convertView;
+        if (view == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.facility_item, null);
+        }
         TextView textView = (TextView) view.findViewById(R.id.tvFacilityListName);
         textView.setText(facility.getName());
 
