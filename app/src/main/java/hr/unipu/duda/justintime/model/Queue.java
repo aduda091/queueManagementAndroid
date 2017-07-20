@@ -7,17 +7,10 @@ public class Queue {
 
     private String id;
     private String name;
-    private String[] usersInQueue;
-    private int priority;
+    private int priority = 0;
 
     public Queue() {
-        priority = (int) (Math.random()*10)+1;
-    }
-
-    public Queue(String id, String name, String[] usersInQueue) {
-        this.id = id;
-        this.name = name;
-        this.usersInQueue = usersInQueue;
+        //priority = (int) (Math.random()*10)+1;
     }
 
     public Queue(String id, String name) {
@@ -39,14 +32,6 @@ public class Queue {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String[] getUsersInQueue() {
-        return usersInQueue;
-    }
-
-    public void setUsersInQueue(String[] usersInQueue) {
-        this.usersInQueue = usersInQueue;
     }
 
     public int getPriority() {

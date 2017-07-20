@@ -27,6 +27,8 @@ import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
 
+import static java.lang.Thread.sleep;
+
 public class QueueListActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
@@ -64,7 +66,8 @@ public class QueueListActivity extends AppCompatActivity {
                         Queue queue = new Queue();
                         queue.setId(object.getString("id"));
                         queue.setName(object.getString("name"));
-                        facility.addQueue(queue);
+                        getPriority(queue);
+                        //facility.addQueue(queue);
                     }
 
                 } catch (JSONException e) {
@@ -100,16 +103,15 @@ public class QueueListActivity extends AppCompatActivity {
     }
 
 
-    private int getPriority(String queueId) {
-        String url = "https://justin-time.herokuapp.com/queue/" + queueId;
-        Log.d("getPriority", "url: " + url);
-        final int[] priority = {0};
+    private void getPriority(final Queue queue) {
+        String url = "https://justin-time.herokuapp.com/queue/" + queue.getId();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    priority[0] = response.getInt("priority");
+                    queue.setPriority(response.getInt("priority"));
+                    facility.addQueue(queue);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -118,12 +120,9 @@ public class QueueListActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("getPriority", "onErrorResponse: " + error.networkResponse.statusCode);
-                priority[0] = 0;
             }
         });
 
         volleyQueue.add(request);
-
-        return 1;
     }
 }
