@@ -41,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 UserController.getInstance().logout();
-                finishAndRemoveTask();//todo: poboljšati brisanje svih zaostalih activity-ja u history-ju zbog otežanog izlaska s back buttonom
+                finishAndRemoveTask();
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
