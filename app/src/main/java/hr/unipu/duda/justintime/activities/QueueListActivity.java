@@ -120,6 +120,8 @@ public class QueueListActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("getPriority", "onErrorResponse: " + error.networkResponse.statusCode);
+                queue.setPriority(0);
+                facility.addQueue(queue);
             }
         });
 
