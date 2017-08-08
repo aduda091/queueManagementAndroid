@@ -186,4 +186,21 @@ public class LoginActivity extends AppCompatActivity {
 
         queue.add(request);
     }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Izlaz")
+                .setMessage("Želite li izaći iz aplikacije?")
+                .setNegativeButton("Ne", null)
+                .setPositiveButton("Da", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        moveTaskToBack(true);
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        System.exit(1);
+                    }
+                }).create().show();
+
+    }
 }
