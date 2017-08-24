@@ -196,10 +196,10 @@ public class LoginActivity extends AppCompatActivity {
                 .setPositiveButton("Da", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface arg0, int arg1) {
-//                        moveTaskToBack(true);
-//                        android.os.Process.killProcess(android.os.Process.myPid());
-//                        System.exit(1);
+                        moveTaskToBack(true);
+                        android.os.Process.killProcess(android.os.Process.myPid());
                         finishAndRemoveTask();
+                        System.exit(1);
                     }
                 }).create().show();
 

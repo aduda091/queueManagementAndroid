@@ -60,12 +60,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="8dp"
         android:text="Prijava"
-        android:drawableRight="@drawable/login"
+
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -90,31 +90,31 @@
 
     <ImageView
         android:id="@+id/imageButton"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_marginLeft="0dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="false"
         android:cropToPadding="false"
+        app:layout_constraintBottom_toTopOf="@+id/fragment"
         app:layout_constraintLeft_toLeftOf="@+id/tvRegisterLink"
         app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:srcCompat="@drawable/facebook"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment" />
+        app:srcCompat="@drawable/facebook" />
 
     <ImageView
         android:id="@+id/imageButton2"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_marginRight="0dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="false"
         android:cropToPadding="true"
+        app:layout_constraintBottom_toTopOf="@+id/fragment"
         app:layout_constraintRight_toRightOf="@+id/tvRegisterLink"
         app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:srcCompat="@drawable/google"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment" />
+        app:srcCompat="@drawable/google" />
 
     <fragment
         android:id="@+id/fragment"

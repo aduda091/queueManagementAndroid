@@ -3,6 +3,7 @@ package hr.unipu.duda.justintime.fragments;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,27 +49,39 @@ public class NavigationFragment extends Fragment {
         navProfile = (Button) view.findViewById(R.id.navProfile);
 
         //boja teksta gumba u navigaciji ovisi o trenutnoj aktivnosti
-        int defaultColor = Color.parseColor("#ff4081");//colorAccent
-        int selectedColor = Color.parseColor("#303f9f");//colorPrimaryDark
+        int defaultColor = Color.parseColor("#303f9f");//colorAccent #ff4081
+        int selectedColor = Color.parseColor("#ff4081");//colorPrimaryDark #303f9f
 
         String currentActivityName = getActivity().getClass().getSimpleName();
         //Log.d("navFragment", "current activity name: " +currentActivityName);
 
         if(currentActivityName.equalsIgnoreCase(FacilityListActivity.class.getSimpleName())) {
             navFacilities.setTextColor(selectedColor);
+            navFacilities.setTypeface(Typeface.DEFAULT_BOLD);
+
             navReservations.setTextColor(defaultColor);
             navProfile.setTextColor(defaultColor);
+            navReservations.setTypeface(Typeface.DEFAULT);
+            navProfile.setTypeface(Typeface.DEFAULT);
         }
         //todo: reservation activity
         else if(currentActivityName.equalsIgnoreCase(ProfileActivity.class.getSimpleName())) {
+            navProfile.setTextColor(selectedColor);
+            navProfile.setTypeface(Typeface.DEFAULT_BOLD);
+
             navFacilities.setTextColor(defaultColor);
             navReservations.setTextColor(defaultColor);
-            navProfile.setTextColor(selectedColor);
+            navFacilities.setTypeface(Typeface.DEFAULT);
+            navReservations.setTypeface(Typeface.DEFAULT);
         }
         else {
             navFacilities.setTextColor(defaultColor);
             navReservations.setTextColor(defaultColor);
             navProfile.setTextColor(defaultColor);
+
+            navFacilities.setTypeface(Typeface.DEFAULT);
+            navReservations.setTypeface(Typeface.DEFAULT);
+            navProfile.setTypeface(Typeface.DEFAULT);
         }
 
         //gumb za popis ustanova
