@@ -15,6 +15,7 @@ import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.activities.FacilityListActivity;
 import hr.unipu.duda.justintime.activities.LoginActivity;
 import hr.unipu.duda.justintime.activities.ProfileActivity;
+import hr.unipu.duda.justintime.activities.ReservationsActivity;
 import hr.unipu.duda.justintime.util.UserController;
 
 
@@ -53,9 +54,9 @@ public class NavigationFragment extends Fragment {
         int selectedColor = Color.parseColor("#ff4081");//colorPrimaryDark #303f9f
 
         String currentActivityName = getActivity().getClass().getSimpleName();
-        //Log.d("navFragment", "current activity name: " +currentActivityName);
 
         if(currentActivityName.equalsIgnoreCase(FacilityListActivity.class.getSimpleName())) {
+            //odabran popis ustanova
             navFacilities.setTextColor(selectedColor);
             navFacilities.setTypeface(Typeface.DEFAULT_BOLD);
 
@@ -64,8 +65,18 @@ public class NavigationFragment extends Fragment {
             navReservations.setTypeface(Typeface.DEFAULT);
             navProfile.setTypeface(Typeface.DEFAULT);
         }
-        //todo: reservation activity
+        else if(currentActivityName.equalsIgnoreCase(ReservationsActivity.class.getSimpleName())) {
+            //odabran popis rezervacija
+            navReservations.setTextColor(selectedColor);
+            navReservations.setTypeface(Typeface.DEFAULT_BOLD);
+
+            navFacilities.setTextColor(defaultColor);
+            navProfile.setTextColor(defaultColor);
+            navFacilities.setTypeface(Typeface.DEFAULT);
+            navProfile.setTypeface(Typeface.DEFAULT);
+        }
         else if(currentActivityName.equalsIgnoreCase(ProfileActivity.class.getSimpleName())) {
+            //odabrane postavke profila
             navProfile.setTextColor(selectedColor);
             navProfile.setTypeface(Typeface.DEFAULT_BOLD);
 
@@ -88,7 +99,23 @@ public class NavigationFragment extends Fragment {
         navFacilities.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), FacilityListActivity.class);
+                Intent intent;
+                if(UserController.getInstance().isRemembered()) {
+                    //korisnik je prijavljen
+                    intent = new Intent(getActivity(), FacilityListActivity.class);
+                } else {
+                    //korisnik nije prijavljen - odvedimo ga na zaslon prijave
+                    intent = new Intent(getActivity(), LoginActivity.class);
+                }
+                startActivity(intent);
+            }
+        });
+
+        //gumb za rezervacije
+        navReservations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ReservationsActivity.class);
                 startActivity(intent);
             }
         });

@@ -28,7 +28,8 @@
         <activity
             android:name=".activities.QueueListActivity"
             android:parentActivityName=".activities.FacilityListActivity" />
-        <activity android:name=".activities.ProfileActivity"></activity>
+        <activity android:name=".activities.ProfileActivity" />
+        <activity android:name=".activities.ReservationsActivity"></activity>
     </application>
 
 </manifest>

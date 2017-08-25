@@ -8,6 +8,7 @@ public class Queue {
     private String id;
     private String name;
     private int priority = 0;
+    private Facility facility;
 
     public Queue() {
         //priority = (int) (Math.random()*10)+1;
@@ -32,6 +33,14 @@ public class Queue {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Facility getFacility() {
+        return facility;
+    }
+
+    public void setFacility(Facility facility) {
+        this.facility = facility;
     }
 
     public int getPriority() {
