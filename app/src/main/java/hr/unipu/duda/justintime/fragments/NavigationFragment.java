@@ -99,14 +99,7 @@ public class NavigationFragment extends Fragment {
         navFacilities.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent;
-                if(UserController.getInstance().isRemembered()) {
-                    //korisnik je prijavljen
-                    intent = new Intent(getActivity(), FacilityListActivity.class);
-                } else {
-                    //korisnik nije prijavljen - odvedimo ga na zaslon prijave
-                    intent = new Intent(getActivity(), LoginActivity.class);
-                }
+                Intent intent = new Intent(getActivity(), FacilityListActivity.class);
                 startActivity(intent);
             }
         });
@@ -115,7 +108,14 @@ public class NavigationFragment extends Fragment {
         navReservations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ReservationsActivity.class);
+                Intent intent;
+                if(UserController.getInstance().isRemembered()) {
+                    //korisnik je prijavljen
+                    intent = new Intent(getActivity(), ReservationsActivity.class);
+                } else {
+                    //korisnik nije prijavljen - odvedimo ga na zaslon prijave
+                    intent = new Intent(getActivity(), LoginActivity.class);
+                }
                 startActivity(intent);
             }
         });
