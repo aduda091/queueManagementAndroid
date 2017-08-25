@@ -9,6 +9,8 @@ public class Queue {
     private String name;
     private int priority = 0;
     private Facility facility;
+    private int myNumber = 14;
+    private int currentNumber = 8;
 
     public Queue() {
         //priority = (int) (Math.random()*10)+1;
@@ -50,6 +52,23 @@ public class Queue {
     public void setPriority(int priority) {
         this.priority = priority;
     }
+
+    public int getMyNumber() {
+        return myNumber;
+    }
+
+    public void setMyNumber(int myNumber) {
+        this.myNumber = myNumber;
+    }
+
+    public int getCurrentNumber() {
+        return currentNumber;
+    }
+
+    public void setCurrentNumber(int currentNumber) {
+        this.currentNumber = currentNumber;
+    }
+
     @Override
     public String toString() {
         return name;

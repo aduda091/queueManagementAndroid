@@ -2,32 +2,24 @@ package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.adapters.QueueArrayAdapter;
-import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
-
-import static java.lang.Thread.sleep;
 
 public class QueueListActivity extends AppCompatActivity {
 

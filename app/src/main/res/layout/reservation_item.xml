@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         >
 
         <TextView
@@ -56,21 +57,22 @@
             android:layout_weight="1"
             android:text="5"
             android:textAppearance="@android:style/TextAppearance.Material.Large"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@android:color/holo_red_dark"
             android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/tvReservationApproximateWait"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Prosječno vrijeme čekanja: 5 minuta"
-        android:textAppearance="@android:style/TextAppearance.Material.DialogWindowTitle" />
+        android:textAppearance="@android:style/TextAppearance.Material.Body1" />
 
     <ImageButton
         android:id="@+id/imgExitQueue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:backgroundTint="@android:color/holo_red_light"
         app:srcCompat="@android:drawable/ic_menu_delete" />
 </LinearLayout>
