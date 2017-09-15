@@ -2,15 +2,12 @@ package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,24 +21,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import hr.unipu.duda.justintime.R;
-import hr.unipu.duda.justintime.adapters.FacilityArrayAdapter;
-import hr.unipu.duda.justintime.fragments.NavigationFragment;
+import hr.unipu.duda.justintime.adapters.FacilityAdapter;
 import hr.unipu.duda.justintime.model.Facility;
 
 public class FacilityListActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
+    List<Facility> facilities;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facility_list);
         setTitle("Ustanove");
 
-        final ArrayList<Facility> facilities = new ArrayList<>();
-        final ListView facilityListView = (ListView) findViewById(R.id.facilityListView);
+        recyclerView = (RecyclerView) findViewById(R.id.facilityRecyclerView);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        facilities = new ArrayList<>();
 
         progressDialog = new ProgressDialog(FacilityListActivity.this);
         progressDialog.setIndeterminate(true);
@@ -73,7 +74,6 @@ public class FacilityListActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(FacilityListActivity.this, "Nisam uspio učitati json", Toast.LENGTH_SHORT).show();
                 Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
                 if(progressDialog.isShowing()) progressDialog.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(FacilityListActivity.this);
@@ -93,18 +93,11 @@ public class FacilityListActivity extends AppCompatActivity {
             @Override
             public void onRequestFinished(Request<Object> request) {
                 if(progressDialog.isShowing()) progressDialog.dismiss();
-                facilityListView.setAdapter(new FacilityArrayAdapter(FacilityListActivity.this, 0, facilities));
+                adapter = new FacilityAdapter(FacilityListActivity.this, facilities);
+                recyclerView.setAdapter(adapter);
             }
         });
 
-        facilityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(FacilityListActivity.this, QueueListActivity.class);
-                intent.putExtra("id", facilities.get(i).getId());
-                intent.putExtra("name", facilities.get(i).getName());
-                startActivity(intent);
-            }
-        });
+
     }
 }

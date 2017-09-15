@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:paddingBottom="10dp"
-    >
+    android:paddingTop="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvFacilityListName"
-        android:text="Ustanova"
-        android:textSize="25sp"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="20dp"
-        />
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/cardview_compat_inset_shadow"
+        app:cardElevation="2dp">
 
-    <ImageView
-        android:id="@+id/imageButtonFacilityInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/info_black"
-        android:textAlignment="center"
-        android:layout_marginRight="-15dp"
-        android:contentDescription="info link" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvFacilityListName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:text="Ustanova"
+                android:textSize="25sp" />
+
+            <ImageView
+                android:id="@+id/imageButtonFacilityInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="-15dp"
+                android:contentDescription="info link"
+                android:src="@drawable/info_black"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>
