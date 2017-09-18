@@ -90,31 +90,33 @@
 
     <ImageView
         android:id="@+id/imageButton"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="32dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="false"
         android:cropToPadding="false"
         app:layout_constraintBottom_toTopOf="@+id/fragment"
         app:layout_constraintLeft_toLeftOf="@+id/tvRegisterLink"
         app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:srcCompat="@drawable/facebook" />
+        app:srcCompat="@drawable/facebook"
+        app:layout_constraintVertical_bias="0.491" />
 
     <ImageView
         android:id="@+id/imageButton2"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="32dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="false"
         android:cropToPadding="true"
         app:layout_constraintBottom_toTopOf="@+id/fragment"
         app:layout_constraintRight_toRightOf="@+id/tvRegisterLink"
         app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:srcCompat="@drawable/google" />
+        app:srcCompat="@drawable/google"
+        app:layout_constraintVertical_bias="0.491" />
 
     <fragment
         android:id="@+id/fragment"
@@ -124,9 +126,9 @@
         tools:layout="@layout/fragment_navigation"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="0dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="0dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintHorizontal_bias="0.0" />
 

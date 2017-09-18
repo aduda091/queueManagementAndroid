@@ -50,49 +50,36 @@ public class NavigationFragment extends Fragment {
         navProfile = (Button) view.findViewById(R.id.navProfile);
 
         //boja teksta gumba u navigaciji ovisi o trenutnoj aktivnosti
-        int defaultColor = Color.parseColor("#303f9f");//colorAccent #ff4081
-        int selectedColor = Color.parseColor("#ff4081");//colorPrimaryDark #303f9f
+        int defaultColor = getResources().getColor(R.color.colorNavigationDefault, null);
+        int selectedColor = getResources().getColor(R.color.colorNavigationSelected, null);
 
         String currentActivityName = getActivity().getClass().getSimpleName();
 
         if(currentActivityName.equalsIgnoreCase(FacilityListActivity.class.getSimpleName())) {
             //odabran popis ustanova
             navFacilities.setTextColor(selectedColor);
-            navFacilities.setTypeface(Typeface.DEFAULT_BOLD);
 
             navReservations.setTextColor(defaultColor);
             navProfile.setTextColor(defaultColor);
-            navReservations.setTypeface(Typeface.DEFAULT);
-            navProfile.setTypeface(Typeface.DEFAULT);
         }
         else if(currentActivityName.equalsIgnoreCase(ReservationsActivity.class.getSimpleName())) {
             //odabran popis rezervacija
             navReservations.setTextColor(selectedColor);
-            navReservations.setTypeface(Typeface.DEFAULT_BOLD);
 
             navFacilities.setTextColor(defaultColor);
             navProfile.setTextColor(defaultColor);
-            navFacilities.setTypeface(Typeface.DEFAULT);
-            navProfile.setTypeface(Typeface.DEFAULT);
         }
         else if(currentActivityName.equalsIgnoreCase(ProfileActivity.class.getSimpleName())) {
             //odabrane postavke profila
             navProfile.setTextColor(selectedColor);
-            navProfile.setTypeface(Typeface.DEFAULT_BOLD);
 
             navFacilities.setTextColor(defaultColor);
             navReservations.setTextColor(defaultColor);
-            navFacilities.setTypeface(Typeface.DEFAULT);
-            navReservations.setTypeface(Typeface.DEFAULT);
         }
         else {
             navFacilities.setTextColor(defaultColor);
             navReservations.setTextColor(defaultColor);
             navProfile.setTextColor(defaultColor);
-
-            navFacilities.setTypeface(Typeface.DEFAULT);
-            navReservations.setTypeface(Typeface.DEFAULT);
-            navProfile.setTypeface(Typeface.DEFAULT);
         }
 
         //gumb za popis ustanova
