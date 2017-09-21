@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ListView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -17,13 +19,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import hr.unipu.duda.justintime.R;
-import hr.unipu.duda.justintime.adapters.QueueArrayAdapter;
+import hr.unipu.duda.justintime.adapters.QueueAdapter;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
 
 public class QueueListActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
     Facility facility;
     RequestQueue volleyQueue;
 
@@ -36,7 +40,9 @@ public class QueueListActivity extends AppCompatActivity {
         facility.setName(getIntent().getStringExtra("name"));
         setTitle(facility.getName() + " - redovi" );
 
-        final ListView queueListView = (ListView) findViewById(R.id.queueListView);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.queueRecyclerView);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         progressDialog = new ProgressDialog(QueueListActivity.this);
         progressDialog.setIndeterminate(true);
@@ -88,7 +94,8 @@ public class QueueListActivity extends AppCompatActivity {
             @Override
             public void onRequestFinished(Request<Object> request) {
                 if(progressDialog.isShowing()) progressDialog.dismiss();
-                queueListView.setAdapter(new QueueArrayAdapter(QueueListActivity.this, 0, facility.getQueues()));
+                adapter = new QueueAdapter(QueueListActivity.this, facility.getQueues());
+                recyclerView.setAdapter(adapter);
             }
         });
 
