@@ -130,7 +130,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getUserData(final String token, final String password) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         String url = "https://justin-time.herokuapp.com/user/me?access_token="+token;
         Map<String, String> params = new HashMap<>();
         params.put("access_token", token);
