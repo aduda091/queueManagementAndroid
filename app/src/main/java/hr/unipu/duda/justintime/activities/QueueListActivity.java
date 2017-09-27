@@ -64,6 +64,7 @@ public class QueueListActivity extends AppCompatActivity {
                         Queue queue = new Queue();
                         queue.setId(object.getString("id"));
                         queue.setName(object.getString("name"));
+                        queue.setFacility(facility);
                         getPriority(queue);
                         //facility.addQueue(queue);
                     }

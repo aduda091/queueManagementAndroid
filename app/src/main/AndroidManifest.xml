@@ -38,6 +38,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.ReservationsActivity" />
+        <activity android:name=".activities.QueueDetailActivity" android:parentActivityName=".activities.QueueListActivity" />
     </application>
 
 </manifest>

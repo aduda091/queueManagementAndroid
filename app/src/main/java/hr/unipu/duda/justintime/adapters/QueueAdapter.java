@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hr.unipu.duda.justintime.R;
+import hr.unipu.duda.justintime.activities.QueueDetailActivity;
 import hr.unipu.duda.justintime.activities.QueueListActivity;
 import hr.unipu.duda.justintime.model.Queue;
 
@@ -65,12 +66,16 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder>{
 
         @Override
         public void onClick(View view) {
-           /* int position = getAdapterPosition();
+            int position = getAdapterPosition();
             Queue queue = queues.get(position);
-            Intent intent = new Intent(context, QueueListActivity.class);
-            intent.putExtra("id", queue.getId());
-            intent.putExtra("name", queue.getName());
-            context.startActivity(intent);*/
+            Intent intent = new Intent(context, QueueDetailActivity.class);
+            //todo: zamijeniti sa serijalizacijom/bundle
+            intent.putExtra("queueId", queue.getId());
+            intent.putExtra("queueName", queue.getName());
+            intent.putExtra("facilityId", queue.getFacility().getId());
+            intent.putExtra("facilityName", queue.getFacility().getName());
+            intent.putExtra("queuePriority", queue.getPriority());
+            context.startActivity(intent);
         }
     }
 }

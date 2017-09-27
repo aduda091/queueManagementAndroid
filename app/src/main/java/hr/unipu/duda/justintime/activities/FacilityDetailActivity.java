@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class FacilityDetailActivity extends AppCompatActivity {
         final TextView facilityTelephoneTextView = (TextView) findViewById(R.id.facilityTelephoneTextView);
         final TextView facilityMailTextView = (TextView) findViewById(R.id.facilityMailTextView);
         final WebView webView = (WebView) findViewById(R.id.facilityWebView);
+        final ImageView facilityQueueListLinkImageView = (ImageView) findViewById(R.id.facilityQueueListLinkImageView);
 
         progressDialog = new ProgressDialog(FacilityDetailActivity.this);
         progressDialog.setIndeterminate(true);
@@ -98,6 +100,8 @@ public class FacilityDetailActivity extends AppCompatActivity {
                 facilityAddressTextView.setText("Adresa: " + facility.getAddress());
                 facilityTelephoneTextView.setText("Telefon: " + facility.getTelephone());
                 facilityMailTextView.setText("Mail: " + facility.getMail());
+                //link za popis redova skriven dok se ne učitaju podaci (inače se učita prije sadržaja)
+                facilityQueueListLinkImageView.setVisibility(View.VISIBLE);
 
                 //automatsko biranje broja telefona ustanove
                 facilityTelephoneTextView.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +125,16 @@ public class FacilityDetailActivity extends AppCompatActivity {
                     }
                 });
 
+                //pregled redova ustanove
+                facilityQueueListLinkImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(FacilityDetailActivity.this, QueueListActivity.class);
+                        intent.putExtra("id", facility.getId());
+                        intent.putExtra("name", facility.getName());
+                        startActivity(intent);
+                    }
+                });
 
 
                 //karta
