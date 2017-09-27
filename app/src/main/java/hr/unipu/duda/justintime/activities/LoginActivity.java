@@ -145,11 +145,16 @@ public class LoginActivity extends AppCompatActivity {
                     user.setMail(response.getString("mail"));
                     user.setPassword(password);
                     user.setToken(token);
+
+                    //spremi učitane podatke u localStorage
+                    UserController.getInstance().saveUser(user);
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setMessage("Hvala na prijavi, " +user.getFirstName() + " " + user.getLastName() + "!")
                             .setPositiveButton("Nema na čemu", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
                                     Intent intent = new Intent(LoginActivity.this, FacilityListActivity.class);
                                     startActivity(intent);
                                 }
@@ -157,8 +162,7 @@ public class LoginActivity extends AppCompatActivity {
                             .create()
                             .show();
                     if(progressDialog.isShowing())progressDialog.dismiss();
-                    //spremi učitane podatke u localStorage
-                    UserController.getInstance().saveUser(user);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

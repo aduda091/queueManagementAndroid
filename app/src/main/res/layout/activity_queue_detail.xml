@@ -55,4 +55,19 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent" />
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="hr.unipu.duda.justintime.fragments.NavigationFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_navigation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 </android.support.constraint.ConstraintLayout>
