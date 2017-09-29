@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +54,7 @@ public class NavigationFragment extends Fragment {
         int defaultColor = getResources().getColor(R.color.colorNavigationDefault, null);
         int selectedColor = getResources().getColor(R.color.colorNavigationSelected, null);
 
-        String currentActivityName = getActivity().getClass().getSimpleName();
+        final String currentActivityName = getActivity().getClass().getSimpleName();
 
         if(currentActivityName.equalsIgnoreCase(FacilityListActivity.class.getSimpleName())) {
             //odabran popis ustanova
@@ -101,6 +102,11 @@ public class NavigationFragment extends Fragment {
                     intent = new Intent(getActivity(), ReservationsActivity.class);
                 } else {
                     //korisnik nije prijavljen - odvedimo ga na zaslon prijave
+                    if(currentActivityName.equalsIgnoreCase(LoginActivity.class.getSimpleName())) {
+                        //osim ako već je na zaslonu prijave, prikaži poruku
+                        Snackbar.make(view, R.string.login_first, Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
                     intent = new Intent(getActivity(), LoginActivity.class);
                 }
                 startActivity(intent);
@@ -117,6 +123,11 @@ public class NavigationFragment extends Fragment {
                     intent = new Intent(getActivity(), ProfileActivity.class);
                 } else {
                     //korisnik nije prijavljen - odvedimo ga na zaslon prijave
+                    if(currentActivityName.equalsIgnoreCase(LoginActivity.class.getSimpleName())) {
+                        //osim ako već je na zaslonu prijave, prikaži poruku
+                        Snackbar.make(v, R.string.login_first, Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
                     intent = new Intent(getActivity(), LoginActivity.class);
                 }
                 startActivity(intent);

@@ -3,4 +3,6 @@
 
     <string name="register_here">Nemate račun? Registrirajte se <u>ovdje</u>!</string>
     <string name="login_here">Već imate račun? Prijavite se <u>ovdje</u>!</string>
+    <string name="login_first">Morate se prijaviti kako bi koristili ovu mogućnost!</string>
+    <string name="long_press_map">Dugi dodir na kartu otvara detaljniji prikaz i navigaciju</string>
 </resources>

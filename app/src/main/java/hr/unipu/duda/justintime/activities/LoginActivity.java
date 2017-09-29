@@ -58,9 +58,14 @@ public class LoginActivity extends AppCompatActivity {
 
         if(UserController.getInstance().isRemembered()) {
             //korisnički podaci su već spremljeni
-            User user = UserController.getInstance().getUser();
+            /*User user = UserController.getInstance().getUser();
             etUsername.setText(user.getMail());
-            etPassword.setText(user.getPassword());
+            etPassword.setText(user.getPassword());*/
+
+            //preusmjeri korisnika s login ekrana ako je već prijavljen
+            Intent intent = new Intent(LoginActivity.this, FacilityListActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -154,9 +159,9 @@ public class LoginActivity extends AppCompatActivity {
                             .setPositiveButton("Nema na čemu", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    finish();
                                     Intent intent = new Intent(LoginActivity.this, FacilityListActivity.class);
                                     startActivity(intent);
+                                    finish();
                                 }
                             })
                             .create()
@@ -174,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.d("onError", "Error: " + error
                         + "\nStatus Code " + error.networkResponse.statusCode
-                        + "\nResponse Data " + error.networkResponse.data
+                        + "\nResponse Data " + error.networkResponse.data.toString()
                         + "\nCause " + error.getCause()
                         + "\nmessage" + error.getMessage());
                 if(progressDialog.isShowing()) progressDialog.dismiss();

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -144,7 +145,8 @@ public class FacilityDetailActivity extends AppCompatActivity {
                 if(progressDialog.isShowing()) progressDialog.dismiss();
 
                 //dugi klik na kartu otvara google maps aplikaciju - testirano i na emulatoru
-                Toast.makeText(FacilityDetailActivity.this, "Dugi dodir na kartu otvara detaljniji prikaz", Toast.LENGTH_SHORT).show();
+                Snackbar.make(webView, R.string.long_press_map, Snackbar.LENGTH_LONG).show();
+
                 webView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
