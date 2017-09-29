@@ -23,10 +23,12 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardViewLogin"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:cardElevation="2dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -36,41 +38,52 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="5dp">
 
-
-            <EditText
-                android:id="@+id/etUsername"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:hint="E-mail"
-                android:inputType="textEmailAddress"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/logoImageView" />
+                android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/etPassword"
+                <EditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:hint="E-mail"
+                    android:inputType="textEmailAddress"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/logoImageView" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                app:passwordToggleEnabled="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:hint="Lozinka"
-                android:inputType="textPassword"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etUsername" />
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:hint="Lozinka"
+                    android:inputType="textPassword"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etUsername" />
+            </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/btnLogin"
@@ -97,8 +110,10 @@
         android:id="@+id/tvRegisterLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="@string/register_here"
         android:textAlignment="center"
@@ -114,20 +129,22 @@
         android:layout_height="75dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="false"
         android:cropToPadding="false"
         app:layout_constraintBottom_toTopOf="@+id/fragment"
         app:layout_constraintLeft_toLeftOf="@+id/tvRegisterLink"
         app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:srcCompat="@drawable/facebook"
-        app:layout_constraintVertical_bias="0.491" />
+        app:layout_constraintVertical_bias="0.491"
+        app:srcCompat="@drawable/facebook" />
 
     <ImageView
         android:id="@+id/imageButton2"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="false"
@@ -135,21 +152,18 @@
         app:layout_constraintBottom_toTopOf="@+id/fragment"
         app:layout_constraintRight_toRightOf="@+id/tvRegisterLink"
         app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:srcCompat="@drawable/google"
-        app:layout_constraintVertical_bias="0.491" />
+        app:layout_constraintVertical_bias="0.491"
+        app:srcCompat="@drawable/google" />
 
     <fragment
         android:id="@+id/fragment"
         android:name="hr.unipu.duda.justintime.fragments.NavigationFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_navigation"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="0dp"
-        android:layout_marginRight="0dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="0dp"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout="@layout/fragment_navigation" />
 
 </android.support.constraint.ConstraintLayout>
