@@ -10,6 +10,7 @@ public class UserController extends Application{
     private static UserController mInstance;
     public static final String PREFS_NAME = "UserData";
 
+    public static final String ID = "id";
     public static final String MAIL = "mail";
     public static final String PASSWORD = "password";
     public static final String FIRSTNAME = "firstName";
@@ -35,6 +36,7 @@ public class UserController extends Application{
 
     public void saveUser(User user) {
         editor = sharedPreferences.edit();
+        editor.putString(ID, user.getId());
         editor.putString(MAIL, user.getMail());
         editor.putString(PASSWORD, user.getPassword());//todo: za potrebe lakšeg testiranja, nikako u praksi
         editor.putString(FIRSTNAME, user.getFirstName());
@@ -44,7 +46,17 @@ public class UserController extends Application{
         editor.apply();
     }
 
+    public void updateUser(User user) {
+        editor = sharedPreferences.edit();
+        editor.putString(MAIL, user.getMail());
+        editor.putString(FIRSTNAME, user.getFirstName());
+        editor.putString(LASTNAME, user.getLastName());
+
+        editor.apply();
+    }
+
     public User getUser() {
+        String id = sharedPreferences.getString(ID, "");
         String mail = sharedPreferences.getString(MAIL, "");
         String password = sharedPreferences.getString(PASSWORD, "");
         String firstName = sharedPreferences.getString(FIRSTNAME, "");
@@ -52,6 +64,7 @@ public class UserController extends Application{
         String token = sharedPreferences.getString(TOKEN, "");
 
         User user = new User(firstName, lastName, mail, password, token);
+        user.setId(id);
         return user;
     }
 
@@ -65,6 +78,7 @@ public class UserController extends Application{
 
     public void logout() {
         editor = sharedPreferences.edit();
+        editor.remove(ID);
         editor.remove(MAIL);
         editor.remove(PASSWORD);
         editor.remove(FIRSTNAME);
