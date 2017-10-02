@@ -65,27 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //validacija polja
-                if(etName.getText().toString().trim().isEmpty()) {
-                    etName.requestFocus();
-                    etName.setError("Ime ne smije biti prazno");
-                    return;
-                }
-                if(etLastName.getText().toString().trim().isEmpty()) {
-                    etLastName.requestFocus();
-                    etLastName.setError("Prezime ne smije biti prazno");
-                    return;
-                }
-                if(etEmail.getText().toString().isEmpty()) {
-                    etEmail.requestFocus();
-                    etEmail.setError("E-mail ne smije biti prazan");
-                    return;
-                }
-                if(!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches()) {
-                    etEmail.requestFocus();
-                    etEmail.setError("E-mail mora biti valjan");
-                    return;
-                }
+                if (validateFields()) return;
                 saveChanges();
             }
         });
@@ -99,6 +79,33 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private boolean validateFields() {
+
+        boolean hasErrors = false;
+
+        if(etName.getText().toString().trim().isEmpty()) {
+            etName.requestFocus();
+            etName.setError("Ime ne smije biti prazno");
+            hasErrors = true;
+        }
+        if(etLastName.getText().toString().trim().isEmpty()) {
+            etLastName.requestFocus();
+            etLastName.setError("Prezime ne smije biti prazno");
+            hasErrors = true;
+        }
+        if(etEmail.getText().toString().trim().isEmpty()) {
+            etEmail.requestFocus();
+            etEmail.setError("E-mail ne smije biti prazan");
+            hasErrors = true;
+        }
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches()) {
+            etEmail.requestFocus();
+            etEmail.setError("E-mail mora biti valjan");
+            hasErrors = true;
+        }
+        return hasErrors;
     }
 
     void saveChanges() {

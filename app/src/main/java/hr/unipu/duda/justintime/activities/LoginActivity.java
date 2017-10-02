@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,6 +32,10 @@ import hr.unipu.duda.justintime.requests.LoginRequest;
 import hr.unipu.duda.justintime.util.UserController;
 
 public class LoginActivity extends AppCompatActivity {
+    EditText etUsername;
+    EditText etPassword;
+    TextInputLayout inputLayoutPassword;
+
     RequestQueue queue;
     ProgressDialog progressDialog;
     @Override
@@ -39,8 +44,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         queue = Volley.newRequestQueue(this);
-        final EditText etUsername = (EditText) findViewById(R.id.etUsername);
-        final EditText etPassword = (EditText) findViewById(R.id.etPassword);
+
+        etUsername = (EditText) findViewById(R.id.etUsername);
+        etPassword = (EditText) findViewById(R.id.etPassword);
+        inputLayoutPassword = (TextInputLayout) findViewById(R.id.inputLayoutPassword);
         final TextView tvRegisterLink = (TextView) findViewById(R.id.tvRegisterLink);
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
 
@@ -57,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if(UserController.getInstance().isRemembered()) {
+            // TODO: ako je istekao token, popuni polja da se zatraži novi
             //korisnički podaci su već spremljeni
             /*User user = UserController.getInstance().getUser();
             etUsername.setText(user.getMail());
@@ -71,16 +79,13 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(validateFields()) return;
+
                 final String username = etUsername.getText().toString();
                 final String password = etPassword.getText().toString();
 
                 if(!progressDialog.isShowing()) progressDialog.show();
-
-                //kroz loginRequest i url
-//                HashMap<String, String> params = new HashMap<String, String>();
-//                params.put("grant_type", "password");
-//                params.put("username", username);
-//                params.put("password", password);
 
                 LoginRequest loginRequest = new LoginRequest(username, password, new Response.Listener<JSONObject>() {
                     @Override
@@ -100,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             Log.d("onError", "Error: " + error
                                     + "\nStatus Code " + error.networkResponse.statusCode
-                                    + "\nResponse Data " + error.networkResponse.data
+                                    + "\nResponse Data " + error.networkResponse.data.toString()
                                     + "\nCause " + error.getCause()
                                     + "\nmessage" + error.getMessage());
                         } catch (Exception e) {
@@ -131,6 +136,29 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private boolean validateFields() {
+        boolean hasErrors = false;
+
+        if(etUsername.getText().toString().isEmpty()) {
+            etUsername.requestFocus();
+            etUsername.setError("E-mail ne smije biti prazan");
+            hasErrors = true;
+        }
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(etUsername.getText().toString()).matches()) {
+            etUsername.requestFocus();
+            etUsername.setError("E-mail mora biti valjan");
+            hasErrors = true;
+        }
+        if(etPassword.getText().toString().trim().isEmpty()) {
+            etPassword.requestFocus();
+            //etPassword.setError("Lozinka ne smije biti prazna");
+            inputLayoutPassword.setError("Lozinka ne smije biti prazna");
+            hasErrors = true;
+        }
+
+        return hasErrors;
     }
 
     private void getUserData(final String token, final String password) {
@@ -195,21 +223,22 @@ public class LoginActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle("Izlaz")
-                .setMessage("Želite li izaći iz aplikacije?")
-                .setNegativeButton("Ne", null)
-                .setPositiveButton("Da", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        moveTaskToBack(true);
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        finishAndRemoveTask();
-                        System.exit(1);
-                    }
-                }).create().show();
-
-    }
+//    @Override
+//    public void onBackPressed() {
+//        new AlertDialog.Builder(this)
+//                .setTitle("Izlaz")
+//                .setMessage("Želite li izaći iz aplikacije?")
+//                .setNegativeButton("Ne", null)
+//                .setPositiveButton("Da", new DialogInterface.OnClickListener() {
+//
+//                    public void onClick(DialogInterface arg0, int arg1) {
+//                        /*moveTaskToBack(true);
+//                        android.os.Process.killProcess(android.os.Process.myPid());
+//                        finishAndRemoveTask();
+//                        System.exit(1);*/
+//                        finish();
+//                    }
+//                }).create().show();
+//
+//    }
 }
