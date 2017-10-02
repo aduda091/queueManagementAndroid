@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,6 +34,9 @@ public class RegisterActivity extends AppCompatActivity {
     EditText etEmail;
     EditText etPassword;
     EditText etPassword2;
+    TextInputLayout inputLayoutPassword;
+    TextInputLayout inputLayoutPassword2;
+
     Button btnRegister;
     RequestQueue queue;
     ProgressDialog progressDialog;
@@ -51,6 +55,8 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
         etPassword2 = (EditText) findViewById(R.id.etPassword2);
+        inputLayoutPassword = (TextInputLayout) findViewById(R.id.inputLayoutPassword);
+        inputLayoutPassword2 = (TextInputLayout) findViewById(R.id.inputLayoutPassword2);
 
         progressDialog = new ProgressDialog(RegisterActivity.this);
         progressDialog.setIndeterminate(true);
@@ -70,32 +76,14 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String name = etName.getText().toString();
-                final String lastName = etLastName.getText().toString();
-                final String email = etEmail.getText().toString();
-                final String password = etPassword.getText().toString();
-                final String password2 = etPassword2.getText().toString();
 
-                if(!password.equals(password2)) {
-                    //lozinke se ne poklapaju, izlaz
-                    if(progressDialog.isShowing()) progressDialog.dismiss();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage("Lozinke se moraju poklapati")
-                            .setNegativeButton("U redu", null)
-                            .create()
-                            .show();
-                    return;
-                }
+                if(validateFields()) return;
 
-                if(name.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty() || password2.isEmpty()) {
-                    //nisu popunjena sva polja
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage("Morate popuniti sva polja")
-                            .setNegativeButton("U redu", null)
-                            .create()
-                            .show();
-                    return;
-                }
+                final String name = etName.getText().toString().trim();
+                final String lastName = etLastName.getText().toString().trim();
+                final String email = etEmail.getText().toString().trim();
+                final String password = etPassword.getText().toString().trim();
+                final String password2 = etPassword2.getText().toString().trim();
 
                 String url = "https://justin-time.herokuapp.com/user/create";
                 final HashMap<String, String> params = new HashMap<String, String>();
@@ -121,6 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         intent.putExtra("username", email);
                                         intent.putExtra("password", password);
                                         startActivity(intent);
+                                        finish();
                                     }
                                 })
                                 .create()
@@ -149,5 +138,45 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private boolean validateFields() {
+
+        boolean hasErrors = false;
+
+        if(etName.getText().toString().isEmpty()) {
+            etName.requestFocus();
+            etName.setError("Ime ne smije biti prazno");
+            hasErrors = true;
+        }
+        if(etLastName.getText().toString().isEmpty()) {
+            etLastName.requestFocus();
+            etLastName.setError("Prezime ne smije biti prazno");
+            hasErrors = true;
+        }
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches()) {
+            etEmail.requestFocus();
+            etEmail.setError("E-mail mora biti valjan");
+            hasErrors = true;
+        }
+        if(etPassword.getText().toString().trim().isEmpty()) {
+            etPassword.requestFocus();
+            //etPassword.setError("Lozinka ne smije biti prazna");
+            inputLayoutPassword.setError("Lozinka ne smije biti prazna");
+            hasErrors = true;
+        }
+        if(etPassword2.getText().toString().trim().isEmpty()) {
+            etPassword2.requestFocus();
+            inputLayoutPassword2.setError("Lozinka ne smije biti prazna");
+            hasErrors = true;
+        }
+        if(!etPassword.getText().toString().trim().equalsIgnoreCase(etPassword2.getText().toString().trim())) {
+            etPassword.requestFocus();
+            inputLayoutPassword.setError("Lozinke se moraju podudarati");
+            inputLayoutPassword2.setError("Lozinke se moraju podudarati");
+            hasErrors = true;
+        }
+
+        return hasErrors;
     }
 }
