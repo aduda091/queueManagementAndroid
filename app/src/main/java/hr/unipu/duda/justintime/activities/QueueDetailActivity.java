@@ -38,7 +38,8 @@ public class QueueDetailActivity extends AppCompatActivity {
         facilityNameTextView.setText(facility.getName());
         queueNameTextView.setText(queue.getName());
         priorityTextView.setText("Trenutni broj: " + queue.getPriority());
-
+        int nextNumber = queue.getPriority()+1;
+        reserveButton.setText("Uzmi broj:\n" + nextNumber);
 
 
     }

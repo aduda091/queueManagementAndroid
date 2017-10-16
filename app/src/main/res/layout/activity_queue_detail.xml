@@ -46,15 +46,20 @@
 
     <Button
         android:id="@+id/reserveButton"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Uzmi broj"
-        app:layout_constraintTop_toBottomOf="@+id/priorityTextView"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="32dp"
+        android:lineSpacingExtra="18sp"
+        android:padding="30dp"
+        android:text="Uzmi broj\n16"
+        android:textSize="30sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/priorityTextView" />
 
     <fragment
         android:id="@+id/fragment"
