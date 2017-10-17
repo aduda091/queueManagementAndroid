@@ -3,6 +3,9 @@ package hr.unipu.duda.justintime.activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -11,8 +14,10 @@ import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
 
 public class QueueDetailActivity extends AppCompatActivity {
-    TextView facilityNameTextView, queueNameTextView, priorityTextView;
+    TextView facilityNameTextView, queueNameTextView, priorityTextView, myPriorityTextView;
     Button reserveButton;
+    Animation animation;
+    int nextNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +26,10 @@ public class QueueDetailActivity extends AppCompatActivity {
         facilityNameTextView = (TextView) findViewById(R.id.facilityNameTextView);
         queueNameTextView = (TextView) findViewById(R.id.queueNameTextView);
         priorityTextView = (TextView) findViewById(R.id.priorityTextView);
+        myPriorityTextView = (TextView) findViewById(R.id.myPriorityTextView);
         reserveButton = (Button) findViewById(R.id.reserveButton);
+
+        animation = AnimationUtils.loadAnimation(this, R.anim.zoomin);
 
         Facility facility = new Facility();
         facility.setName(getIntent().getStringExtra("facilityName"));
@@ -38,10 +46,34 @@ public class QueueDetailActivity extends AppCompatActivity {
         facilityNameTextView.setText(facility.getName());
         queueNameTextView.setText(queue.getName());
         priorityTextView.setText("Trenutni broj: " + queue.getPriority());
-        int nextNumber = queue.getPriority()+1;
+        nextNumber = queue.getPriority()+1;
         reserveButton.setText("Uzmi broj:\n" + nextNumber);
 
+        reserveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reserveButton.startAnimation(animation);
+            }
+        });
 
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                reserveButton.setVisibility(View.GONE);
+                myPriorityTextView.setText("Vaš broj je " + nextNumber);
+                myPriorityTextView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 
     @Override
