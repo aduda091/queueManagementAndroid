@@ -1,9 +1,10 @@
 package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ListView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
 
@@ -11,14 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hr.unipu.duda.justintime.R;
-import hr.unipu.duda.justintime.adapters.ReservationArrayAdapter;
+import hr.unipu.duda.justintime.adapters.ReservationAdapter;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
 
 public class ReservationsActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     RequestQueue volleyQueue;
-    ListView reservationListView;
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +53,10 @@ public class ReservationsActivity extends AppCompatActivity {
         reservations.add(queue1);
 
 
-        reservationListView = (ListView) findViewById(R.id.reservationListView);
-        reservationListView.setAdapter(new ReservationArrayAdapter(this, 0, reservations));
-
+        recyclerView = (RecyclerView) findViewById(R.id.reservationRecyclerView);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new ReservationAdapter(ReservationsActivity.this, reservations);
+        recyclerView.setAdapter(adapter);
     }
 }

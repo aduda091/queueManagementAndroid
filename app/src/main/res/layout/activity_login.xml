@@ -39,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingBottom="10dp"
             android:paddingTop="5dp">
 
             <android.support.design.widget.TextInputLayout
@@ -67,9 +68,8 @@
                 android:id="@+id/inputLayoutPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true"
                 app:errorEnabled="true"
-                >
+                app:passwordToggleEnabled="true">
 
                 <EditText
                     android:id="@+id/etPassword"
@@ -113,11 +113,9 @@
         android:id="@+id/tvRegisterLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/register_here"
         android:textAlignment="center"
         android:textSize="18sp"

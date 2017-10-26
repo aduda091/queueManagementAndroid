@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context="hr.unipu.duda.justintime.activities.ReservationsActivity">
 
-    <ListView
-        android:id="@+id/reservationListView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/reservationRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"

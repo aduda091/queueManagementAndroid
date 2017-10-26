@@ -40,7 +40,7 @@ public class QueueListActivity extends AppCompatActivity {
         facility.setName(getIntent().getStringExtra("name"));
         setTitle(facility.getName() + " - redovi" );
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.queueRecyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.queueRecyclerView);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
