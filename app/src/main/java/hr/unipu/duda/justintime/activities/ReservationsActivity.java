@@ -111,10 +111,14 @@ public class ReservationsActivity extends AppCompatActivity {
                 if(progressDialog.isShowing()) progressDialog.dismiss();
                 String message = "Neuspješan dohvat podataka, molim pokušajte ponovno.";
                 try {
-                    if (error.networkResponse.statusCode == 401)
+                    if (error.networkResponse.statusCode == 401) {
                         message = "Morate se ponovno prijaviti.";
-                    if (error.networkResponse.statusCode == 404)
+                        //todo: odjaviti korisnika i preusmjeriti ga na login
+                    }
+                    if (error.networkResponse.statusCode == 404) {
                         message = "Nemate rezervacija.";
+                        //todo: preusmjeriti na popis ustanova
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
