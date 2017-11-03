@@ -2,6 +2,7 @@ package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -19,7 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +42,9 @@ public class ReservationsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reservations);
 
         reservations = new ArrayList<>();
+        recyclerView = (RecyclerView) findViewById(R.id.reservationRecyclerView);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(ReservationsActivity.this));
 
         progressDialog = new ProgressDialog(ReservationsActivity.this);
         progressDialog.setIndeterminate(true);
@@ -69,21 +71,17 @@ public class ReservationsActivity extends AppCompatActivity {
                         facility.setName(queuedFacility.getString("name"));
                         facility.setId(queuedFacility.getString("id"));
 
-                        // to radi Log.d("Facility", facility.toString());
-                        // isto Log.d("queuedFacilityNames", queuedFacility.names().toString());// ["id","name","address","mail","telephone","queues"]
-                        //ovako pokaže string da Log.d("queuedFacilityQueues", queuedFacility.optString("queues")); //{"5878d3f9b3646427748afe8d":{"id":"5878d3f9b3646427748afe8d","name":"Referada","priority":1}}
                         //queues nije ni array ni objekt
-                        //JSONArray queues = queuedFacility.getJSONArray("queues");
+                        //ovako pokaže string Log.d("queuedFacilityQueues", queuedFacility.optString("queues"));
+                        // {"5878d3f9b3646427748afe8d":{"id":"5878d3f9b3646427748afe8d","name":"Referada","priority":1}}
 
                         String queueStringAll = queuedFacility.optString("queues");
                         String queueString = "[" + queueStringAll + "]";
                         JSONArray queues = new JSONArray(queueString);
 
 
-                        //JSONArray queuesIds = queues.names();
-                        //for(int j=0;j<queuesIds.length();j++) {
+
                         for(int j=0;j<queues.length();j++) {
-//                            JSONObject tempQueue = queues.getJSONObject(queuesIds.getString(j));
                             JSONObject tempObject = queues.getJSONObject(j);
                             Log.d("tempObject", tempObject.toString());
                             JSONArray tempObjectIds = tempObject.names();
@@ -95,14 +93,13 @@ public class ReservationsActivity extends AppCompatActivity {
                                 queue.setId(tempQueue.getString("id"));
                                 queue.setName(tempQueue.getString("name"));
                                 queue.setMyNumber(tempQueue.getInt("priority"));
-                                //todo: pravi brojevi
-                                queue.setCurrentNumber(0);
-                                reservations.add(queue);
+                                getCurrentNumber(queue);
                             }
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+
                 }
 
                 if(progressDialog.isShowing()) progressDialog.dismiss();
@@ -112,43 +109,59 @@ public class ReservationsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.d("ERROR", "onErrorResponse: " +error);
                 if(progressDialog.isShowing()) progressDialog.dismiss();
+                String message = "Neuspješan dohvat podataka, molim pokušajte ponovno.";
+                try {
+                    if (error.networkResponse.statusCode == 401)
+                        message = "Morate se ponovno prijaviti.";
+                    if (error.networkResponse.statusCode == 404)
+                        message = "Nemate rezervacija.";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(ReservationsActivity.this);
+                builder.setMessage(message)
+                        .setNegativeButton("U redu", null)
+                        .create().show();
             }
         });
 
         volleyQueue.add(request);
 
-
-
-        /*Facility facility = new Facility();
-        facility.setName("Općina");
-        Queue queue = new Queue("bla","Carina");
-        queue.setFacility(facility);
-        queue.setCurrentNumber(5);
-        queue.setMyNumber(7);
-        reservations.add(queue);
-
-        Facility facility1 = new Facility();
-        facility1.setName("Konzum");
-        Queue queue1 = new Queue();
-        queue1.setFacility(facility1);
-        queue1.setName("Brza blagajna");
-        queue1.setCurrentNumber(2);
-        queue1.setMyNumber(3);
-        reservations.add(queue1);
-        */
-
         volleyQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
             public void onRequestFinished(Request<Object> request) {
                 if(progressDialog.isShowing()) progressDialog.dismiss();
-                recyclerView = (RecyclerView) findViewById(R.id.reservationRecyclerView);
-                recyclerView.setHasFixedSize(false);
-                recyclerView.setLayoutManager(new LinearLayoutManager(ReservationsActivity.this));
+
                 adapter = new ReservationAdapter(ReservationsActivity.this, reservations);
                 recyclerView.setAdapter(adapter);
             }
         });
 
 
+    }
+
+    private void getCurrentNumber(final Queue queue) {
+        String url = "https://justin-time.herokuapp.com/queue/currentUser/" + queue.getId();
+
+        JsonObjectRequest priorityRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    queue.setCurrentNumber(response.getInt("priority"));
+                    reservations.add(queue);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("getCurrentNumber", "onErrorResponse: " + error.networkResponse.statusCode);
+                queue.setCurrentNumber(0);
+                reservations.add(queue);
+            }
+        });
+
+        volleyQueue.add(priorityRequest);
     }
 }
