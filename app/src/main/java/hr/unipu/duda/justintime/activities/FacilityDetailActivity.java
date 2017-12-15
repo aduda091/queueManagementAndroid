@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -144,8 +145,15 @@ public class FacilityDetailActivity extends AppCompatActivity {
                 webView.loadUrl("https://maps.googleapis.com/maps/api/staticmap?center="+ urlAdress + "&markers="+urlAdress +"&zoom=16&size=400x400&key="+API_KEY);
                 if(progressDialog.isShowing()) progressDialog.dismiss();
 
-                //dugi klik na kartu otvara google maps aplikaciju - testirano i na emulatoru
-                Snackbar.make(webView, R.string.long_press_map, Snackbar.LENGTH_LONG).show();
+                //poruka da dugi klik na kartu otvara google maps aplikaciju
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Snackbar.make(webView, R.string.long_press_map, Snackbar.LENGTH_LONG).show();
+                    }
+                }, 2000);
+
 
                 webView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
