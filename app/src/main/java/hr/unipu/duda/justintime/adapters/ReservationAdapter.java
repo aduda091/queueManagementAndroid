@@ -28,7 +28,7 @@ import java.util.List;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.activities.ReservationsActivity;
 import hr.unipu.duda.justintime.model.Queue;
-import hr.unipu.duda.justintime.util.UserController;
+import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.ViewHolder>{
 
@@ -75,7 +75,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     private void exitQueue(Queue queue) {
         RequestQueue volleyQueue = Volley.newRequestQueue(context);
         String url = "https://justin-time.herokuapp.com/queue/removeUser/" + queue.getFacility().getId() + "/" + queue.getId();
-        url += "?access_token=" + UserController.getInstance().getToken();
+        url += "?access_token=" + ApplicationController.getInstance().getToken();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE, url, null, new Response.Listener<JSONObject>() {
             @Override

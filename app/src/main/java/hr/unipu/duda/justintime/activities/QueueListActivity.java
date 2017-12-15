@@ -22,6 +22,7 @@ import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.adapters.QueueAdapter;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
+import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class QueueListActivity extends AppCompatActivity {
 
@@ -52,7 +53,7 @@ public class QueueListActivity extends AppCompatActivity {
 
         //Volley
         volleyQueue = Volley.newRequestQueue(this);
-        String url = "https://justin-time.herokuapp.com/facility/" +facility.getId();
+        String url = ApplicationController.API_URL + "/facility/" +facility.getId();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -104,7 +105,7 @@ public class QueueListActivity extends AppCompatActivity {
 
 
     private void getPriority(final Queue queue) {
-        String url = "https://justin-time.herokuapp.com/queue/" + queue.getId();
+        String url = ApplicationController.API_URL + "/queue/" + queue.getId();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

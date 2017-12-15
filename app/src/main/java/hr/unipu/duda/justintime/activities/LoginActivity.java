@@ -29,7 +29,7 @@ import java.util.Map;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.model.User;
 import hr.unipu.duda.justintime.requests.LoginRequest;
-import hr.unipu.duda.justintime.util.UserController;
+import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class LoginActivity extends AppCompatActivity {
     EditText etUsername;
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
-        if(UserController.getInstance().isRemembered()) {
+        if(ApplicationController.getInstance().isRemembered()) {
             // TODO: ako je istekao token, popuni polja da se zatraži novi
             //korisnički podaci su već spremljeni
             /*User user = UserController.getInstance().getUser();
@@ -182,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
                     user.setToken(token);
 
                     //spremi učitane podatke u localStorage
-                    UserController.getInstance().saveUser(user);
+                    ApplicationController.getInstance().saveUser(user);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setMessage("Hvala na prijavi, " +user.getFirstName() + " " + user.getLastName() + "!")

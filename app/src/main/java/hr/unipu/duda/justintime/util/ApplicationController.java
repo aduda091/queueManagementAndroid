@@ -6,9 +6,10 @@ import android.content.SharedPreferences;
 import hr.unipu.duda.justintime.model.User;
 
 
-public class UserController extends Application{
-    private static UserController mInstance;
+public class ApplicationController extends Application{
+    private static ApplicationController mInstance;
     public static final String PREFS_NAME = "UserData";
+    public static final String API_URL = "https://justin-time.herokuapp.com";
 
     public static final String ID = "id";
     public static final String MAIL = "mail";
@@ -20,7 +21,7 @@ public class UserController extends Application{
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    public static synchronized UserController getInstance() {
+    public static synchronized ApplicationController getInstance() {
         return mInstance;
     }
 

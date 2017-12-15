@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
-import hr.unipu.duda.justintime.util.UserController;
+import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class QueueDetailActivity extends AppCompatActivity {
     TextView facilityNameTextView, queueNameTextView, priorityTextView, myPriorityTextView;
@@ -66,6 +66,7 @@ public class QueueDetailActivity extends AppCompatActivity {
 
         facilityNameTextView.setText(facility.getName());
         queueNameTextView.setText(queue.getName());
+        //todo: ovo zapravo nije trenutni broj nego zadnji broj u redu
         priorityTextView.setText("Trenutni broj: " + queue.getPriority());
         nextNumber = queue.getPriority()+1;
         reserveButton.setText("Uzmi broj:\n" + nextNumber);
@@ -98,8 +99,8 @@ public class QueueDetailActivity extends AppCompatActivity {
     }
 
     private void attemptEnterQueue() {
-        String url = "https://justin-time.herokuapp.com/queue/addUser/" + facility.getId() + "/" + queue.getId();
-        url += "?access_token=" + UserController.getInstance().getToken();
+        String url = ApplicationController.API_URL + "queue/addUser/" + facility.getId() + "/" + queue.getId();
+        url += "?access_token=" + ApplicationController.getInstance().getToken();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override

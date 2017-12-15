@@ -15,7 +15,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -27,7 +26,7 @@ import java.util.Map;
 
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.model.User;
-import hr.unipu.duda.justintime.util.UserController;
+import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -46,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        user = UserController.getInstance().getUser();
+        user = ApplicationController.getInstance().getUser();
         setTitle(user.getFirstName() + " " + user.getLastName() + " - postavke profila");
 
         etName = (EditText) findViewById(R.id.etName);
@@ -73,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserController.getInstance().logout();
+                ApplicationController.getInstance().logout();
                 finishAndRemoveTask();
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -172,7 +171,7 @@ public class ProfileActivity extends AppCompatActivity {
             user.setMail(userJsonObject.getString("mail"));
 
             //spremi učitane podatke u localStorage
-            UserController.getInstance().updateUser(user);
+            ApplicationController.getInstance().updateUser(user);
 
             //osvježi polja za unos i naslov
             setTitle(user.getFirstName() + " " + user.getLastName() + " - postavke profila");

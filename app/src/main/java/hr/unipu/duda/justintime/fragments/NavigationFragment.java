@@ -2,11 +2,8 @@ package hr.unipu.duda.justintime.fragments;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +14,7 @@ import hr.unipu.duda.justintime.activities.FacilityListActivity;
 import hr.unipu.duda.justintime.activities.LoginActivity;
 import hr.unipu.duda.justintime.activities.ProfileActivity;
 import hr.unipu.duda.justintime.activities.ReservationsActivity;
-import hr.unipu.duda.justintime.util.UserController;
+import hr.unipu.duda.justintime.util.ApplicationController;
 
 
 public class NavigationFragment extends Fragment {
@@ -97,7 +94,7 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent;
-                if(UserController.getInstance().isRemembered()) {
+                if(ApplicationController.getInstance().isRemembered()) {
                     //korisnik je prijavljen
                     intent = new Intent(getActivity(), ReservationsActivity.class);
                 } else {
@@ -118,7 +115,7 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent;
-                if(UserController.getInstance().isRemembered()) {
+                if(ApplicationController.getInstance().isRemembered()) {
                     //korisnik je prijavljen
                     intent = new Intent(getActivity(), ProfileActivity.class);
                 } else {
