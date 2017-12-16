@@ -2,7 +2,24 @@ package hr.unipu.duda.justintime.util;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.User;
 
 
@@ -21,6 +38,9 @@ public class ApplicationController extends Application{
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
+    private RequestQueue volleyQueue;
+    private List<Facility> facilities;
+
     public static synchronized ApplicationController getInstance() {
         return mInstance;
     }
@@ -31,7 +51,48 @@ public class ApplicationController extends Application{
         super.onCreate();
         mInstance = this;
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        volleyQueue = Volley.newRequestQueue(this);
 
+        downloadFacilities();
+    }
+
+    private void downloadFacilities() {
+        //dohvaćanje svih ustanova
+        facilities = new ArrayList<>();
+        String url = API_URL + "/facility/read-all";
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for(int i=0; i<response.length();i++) {
+                    try {
+                        JSONObject facilityObject = response.getJSONObject(i);
+                        Facility facility = new Facility();
+                        facility.setId(facilityObject.getString("id"));
+                        facility.setName(facilityObject.getString("name"));
+                        facilities.add(facility);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
+                //ako je došlo do greške - vjerojatno Heroku još spava, pokušaj ponovno za 5 sekundi
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        downloadFacilities();
+                    }
+                }, 5000);
+            }
+        });
+
+        volleyQueue.add(request);
     }
 
 
@@ -86,5 +147,9 @@ public class ApplicationController extends Application{
         editor.remove(LASTNAME);
         editor.remove(TOKEN);
         editor.apply();
+    }
+
+    public List<Facility> getFacilities() {
+        return facilities;
     }
 }
