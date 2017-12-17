@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,6 +28,7 @@ public class ApplicationController extends Application{
     private static ApplicationController mInstance;
     public static final String PREFS_NAME = "UserData";
     public static final String API_URL = "https://justin-time.herokuapp.com";
+    public static final int TIMEOUT_MS = 30000;
 
     public static final String ID = "id";
     public static final String MAIL = "mail";
@@ -91,7 +93,7 @@ public class ApplicationController extends Application{
                 }, 5000);
             }
         });
-
+        request.setRetryPolicy(new DefaultRetryPolicy(TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         volleyQueue.add(request);
     }
 

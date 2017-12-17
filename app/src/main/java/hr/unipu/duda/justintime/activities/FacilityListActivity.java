@@ -35,6 +35,7 @@ public class FacilityListActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     List<Facility> facilities;
+    Handler handler;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +51,7 @@ public class FacilityListActivity extends AppCompatActivity {
         progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
         if(!progressDialog.isShowing()) progressDialog.show();
 
+        handler = new Handler();
         populateFacilities();
 
 
@@ -64,22 +66,23 @@ public class FacilityListActivity extends AppCompatActivity {
 
         //nisu se stigle učitati ustanove, pokušaj ponovno
         if(facilities.isEmpty()) {
-            Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (facilities.isEmpty()) {
-                        facilities = ApplicationController.getInstance().getFacilities();
+                        populateFacilities();
                     } else {
                         //sakrij progress dialog i osvježi popis
                         if (progressDialog.isShowing()) progressDialog.dismiss();
                         adapter.notifyDataSetChanged();
+                        handler.removeCallbacks(this);
                     }
                 }
-            }, 2500);
+            }, 5000);
         } else {
             //učitale su se ustanove, sakrij dialog
             if (progressDialog.isShowing()) progressDialog.dismiss();
+            adapter.notifyDataSetChanged();
         }
     }
 }
