@@ -22,8 +22,6 @@ public class NavigationFragment extends Fragment {
     Button navFacilities, navReservations, navProfile;
 
 
-
-
     public NavigationFragment() {
         // Required empty public constructor
     }
@@ -53,28 +51,25 @@ public class NavigationFragment extends Fragment {
 
         final String currentActivityName = getActivity().getClass().getSimpleName();
 
-        if(currentActivityName.equalsIgnoreCase(FacilityListActivity.class.getSimpleName())) {
+        if (currentActivityName.equalsIgnoreCase(FacilityListActivity.class.getSimpleName())) {
             //odabran popis ustanova
             navFacilities.setTextColor(selectedColor);
 
             navReservations.setTextColor(defaultColor);
             navProfile.setTextColor(defaultColor);
-        }
-        else if(currentActivityName.equalsIgnoreCase(ReservationsActivity.class.getSimpleName())) {
+        } else if (currentActivityName.equalsIgnoreCase(ReservationsActivity.class.getSimpleName())) {
             //odabran popis rezervacija
             navReservations.setTextColor(selectedColor);
 
             navFacilities.setTextColor(defaultColor);
             navProfile.setTextColor(defaultColor);
-        }
-        else if(currentActivityName.equalsIgnoreCase(ProfileActivity.class.getSimpleName())) {
+        } else if (currentActivityName.equalsIgnoreCase(ProfileActivity.class.getSimpleName())) {
             //odabrane postavke profila
             navProfile.setTextColor(selectedColor);
 
             navFacilities.setTextColor(defaultColor);
             navReservations.setTextColor(defaultColor);
-        }
-        else {
+        } else {
             navFacilities.setTextColor(defaultColor);
             navReservations.setTextColor(defaultColor);
             navProfile.setTextColor(defaultColor);
@@ -84,8 +79,11 @@ public class NavigationFragment extends Fragment {
         navFacilities.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), FacilityListActivity.class);
-                startActivity(intent);
+                if (!currentActivityName.equalsIgnoreCase(FacilityListActivity.class.getSimpleName())) {
+
+                    Intent intent = new Intent(getActivity(), FacilityListActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -93,20 +91,22 @@ public class NavigationFragment extends Fragment {
         navReservations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent;
-                if(ApplicationController.getInstance().isRemembered()) {
-                    //korisnik je prijavljen
-                    intent = new Intent(getActivity(), ReservationsActivity.class);
-                } else {
-                    //korisnik nije prijavljen - odvedimo ga na zaslon prijave
-                    if(currentActivityName.equalsIgnoreCase(LoginActivity.class.getSimpleName())) {
-                        //osim ako već je na zaslonu prijave, prikaži poruku
-                        Snackbar.make(view, R.string.login_first, Snackbar.LENGTH_SHORT).show();
-                        return;
+                if (!currentActivityName.equalsIgnoreCase(ReservationsActivity.class.getSimpleName())) {
+                    Intent intent;
+                    if (ApplicationController.getInstance().isRemembered()) {
+                        //korisnik je prijavljen
+                        intent = new Intent(getActivity(), ReservationsActivity.class);
+                    } else {
+                        //korisnik nije prijavljen - odvedimo ga na zaslon prijave
+                        if (currentActivityName.equalsIgnoreCase(LoginActivity.class.getSimpleName())) {
+                            //osim ako već je na zaslonu prijave, prikaži poruku
+                            Snackbar.make(view, R.string.login_first, Snackbar.LENGTH_SHORT).show();
+                            return;
+                        }
+                        intent = new Intent(getActivity(), LoginActivity.class);
                     }
-                    intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
                 }
-                startActivity(intent);
             }
         });
 
@@ -114,20 +114,22 @@ public class NavigationFragment extends Fragment {
         navProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent;
-                if(ApplicationController.getInstance().isRemembered()) {
-                    //korisnik je prijavljen
-                    intent = new Intent(getActivity(), ProfileActivity.class);
-                } else {
-                    //korisnik nije prijavljen - odvedimo ga na zaslon prijave
-                    if(currentActivityName.equalsIgnoreCase(LoginActivity.class.getSimpleName())) {
-                        //osim ako već je na zaslonu prijave, prikaži poruku
-                        Snackbar.make(v, R.string.login_first, Snackbar.LENGTH_SHORT).show();
-                        return;
+                if (!currentActivityName.equalsIgnoreCase(ProfileActivity.class.getSimpleName())) {
+                    Intent intent;
+                    if (ApplicationController.getInstance().isRemembered()) {
+                        //korisnik je prijavljen
+                        intent = new Intent(getActivity(), ProfileActivity.class);
+                    } else {
+                        //korisnik nije prijavljen - odvedimo ga na zaslon prijave
+                        if (currentActivityName.equalsIgnoreCase(LoginActivity.class.getSimpleName())) {
+                            //osim ako već je na zaslonu prijave, prikaži poruku
+                            Snackbar.make(v, R.string.login_first, Snackbar.LENGTH_SHORT).show();
+                            return;
+                        }
+                        intent = new Intent(getActivity(), LoginActivity.class);
                     }
-                    intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
                 }
-                startActivity(intent);
             }
         });
         return view;

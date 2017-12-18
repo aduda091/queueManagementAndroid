@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hr.unipu.duda.justintime.model.Facility;
+import hr.unipu.duda.justintime.model.Queue;
 import hr.unipu.duda.justintime.model.User;
 
 
@@ -42,6 +43,7 @@ public class ApplicationController extends Application{
 
     private RequestQueue volleyQueue;
     private List<Facility> facilities;
+    private List<Queue> reservations;
 
     public static synchronized ApplicationController getInstance() {
         return mInstance;
@@ -97,6 +99,9 @@ public class ApplicationController extends Application{
         volleyQueue.add(request);
     }
 
+    public void downloadReservations() {
+
+    }
 
     public void saveUser(User user) {
         editor = sharedPreferences.edit();
@@ -108,6 +113,8 @@ public class ApplicationController extends Application{
         editor.putString(TOKEN, user.getToken());
 
         editor.apply();
+        //korisnik je sad prijavljen, dohvatiti njegove rezervacije
+        downloadReservations();
     }
 
     public void updateUser(User user) {
