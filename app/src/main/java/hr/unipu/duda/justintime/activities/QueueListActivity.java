@@ -18,6 +18,10 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.adapters.QueueAdapter;
 import hr.unipu.duda.justintime.model.Facility;
@@ -30,6 +34,7 @@ public class QueueListActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     Facility facility;
+    List<Queue> queues;
     RequestQueue volleyQueue;
 
     @Override
@@ -42,7 +47,7 @@ public class QueueListActivity extends AppCompatActivity {
         setTitle(facility.getName() + " - redovi" );
 
         recyclerView = (RecyclerView) findViewById(R.id.queueRecyclerView);
-        recyclerView.setHasFixedSize(false);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         progressDialog = new ProgressDialog(QueueListActivity.this);
@@ -53,26 +58,39 @@ public class QueueListActivity extends AppCompatActivity {
 
         //Volley
         volleyQueue = Volley.newRequestQueue(this);
-        String url = ApplicationController.API_URL + "/facility/" +facility.getId();
 
+        populateQueues();
+
+
+    }
+
+    private void populateQueues() {
+        //dohvaćanje svih redova trenutne ustanove
+        queues = new ArrayList<>();
+        String url = ApplicationController.API_URL + "/facilities/" +facility.getId();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d("populateQueues", "onResponse: " +response.toString());
                 try {
-                    JSONArray queues = response.getJSONArray("queues");
-                    for (int i=0;i<queues.length();i++) {
-                        JSONObject object = queues.getJSONObject(i);
+                    JSONArray queuesArray = response.getJSONArray("queues");
+                    for (int i=0;i<queuesArray.length();i++) {
+                        JSONObject object = queuesArray.getJSONObject(i);
                         Queue queue = new Queue();
-                        queue.setId(object.getString("id"));
+                        queue.setId(object.getString("_id"));
                         queue.setName(object.getString("name"));
                         queue.setFacility(facility);
-
-                        //facility.addQueue(queue);
+                        queue.setCurrent(object.getInt("current"));
+                        queues.add(queue);
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                if(progressDialog.isShowing()) progressDialog.dismiss();
+                adapter = new QueueAdapter(QueueListActivity.this, queues);
+                recyclerView.setAdapter(adapter);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -84,25 +102,21 @@ public class QueueListActivity extends AppCompatActivity {
                         .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                recreate();
+                                populateQueues();
                             }
                         })
                         .create().show();
             }
         });
 
-//        volleyQueue.add(request);
+        volleyQueue.add(request);
 //        volleyQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
 //            @Override
 //            public void onRequestFinished(Request<Object> request) {
-//                if(progressDialog.isShowing()) progressDialog.dismiss();
-//                adapter = new QueueAdapter(QueueListActivity.this, facility.getQueues());
-//                recyclerView.setAdapter(adapter);
+//
 //            }
 //        });
-
     }
-
 
 
 }

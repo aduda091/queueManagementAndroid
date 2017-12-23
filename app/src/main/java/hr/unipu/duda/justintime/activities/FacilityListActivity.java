@@ -68,7 +68,7 @@ public class FacilityListActivity extends AppCompatActivity {
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-//                Log.d("populateFacilities", "onResponse: " +response.toString());
+                Log.d("populateFacilities", "onResponse: " +response.toString());
                 for(int i=0; i<response.length();i++) {
                     try {
                         JSONObject facilityObject = response.getJSONObject(i);
@@ -90,8 +90,17 @@ public class FacilityListActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
-                //učitale su se ustanove, sakrij dialog
+                //sakrij dialog
                 if (progressDialog.isShowing()) progressDialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(FacilityListActivity.this);
+                builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!")
+                        .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                populateFacilities();
+                            }
+                        })
+                        .create().show();
 
             }
         });
