@@ -60,15 +60,15 @@ public class QueueDetailActivity extends AppCompatActivity {
         queue.setFacility(facility);
         queue.setId(getIntent().getStringExtra("queueId"));
         queue.setName(getIntent().getStringExtra("queueName"));
-        queue.setPriority(getIntent().getIntExtra("queuePriority", 0));
+        queue.setCurrent(getIntent().getIntExtra("queuePriority", 0));
 
         setTitle(facility.getName() + " - " + queue.getName());
 
         facilityNameTextView.setText(facility.getName());
         queueNameTextView.setText(queue.getName());
         //todo: ovo zapravo nije trenutni broj nego zadnji broj u redu
-        priorityTextView.setText("Trenutni broj: " + queue.getPriority());
-        nextNumber = queue.getPriority()+1;
+        priorityTextView.setText("Trenutni broj: " + queue.getCurrent());
+        nextNumber = queue.getCurrent()+1;
         reserveButton.setText("Uzmi broj:\n" + nextNumber);
 
         reserveButton.setOnClickListener(new View.OnClickListener() {

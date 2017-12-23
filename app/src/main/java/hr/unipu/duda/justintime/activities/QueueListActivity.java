@@ -66,7 +66,7 @@ public class QueueListActivity extends AppCompatActivity {
                         queue.setId(object.getString("id"));
                         queue.setName(object.getString("name"));
                         queue.setFacility(facility);
-                        getPriority(queue);
+
                         //facility.addQueue(queue);
                     }
 
@@ -91,41 +91,18 @@ public class QueueListActivity extends AppCompatActivity {
             }
         });
 
-        volleyQueue.add(request);
-        volleyQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
-            @Override
-            public void onRequestFinished(Request<Object> request) {
-                if(progressDialog.isShowing()) progressDialog.dismiss();
-                adapter = new QueueAdapter(QueueListActivity.this, facility.getQueues());
-                recyclerView.setAdapter(adapter);
-            }
-        });
+//        volleyQueue.add(request);
+//        volleyQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+//            @Override
+//            public void onRequestFinished(Request<Object> request) {
+//                if(progressDialog.isShowing()) progressDialog.dismiss();
+//                adapter = new QueueAdapter(QueueListActivity.this, facility.getQueues());
+//                recyclerView.setAdapter(adapter);
+//            }
+//        });
 
     }
 
 
-    private void getPriority(final Queue queue) {
-        String url = ApplicationController.API_URL + "/queue/" + queue.getId();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    queue.setPriority(response.getInt("priority"));
-                    facility.addQueue(queue);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("getPriority", "onErrorResponse: " + error.networkResponse.statusCode);
-                queue.setPriority(0);
-                facility.addQueue(queue);
-            }
-        });
-
-        volleyQueue.add(request);
-    }
 }

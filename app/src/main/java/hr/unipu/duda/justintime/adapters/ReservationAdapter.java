@@ -28,30 +28,31 @@ import java.util.List;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.activities.ReservationsActivity;
 import hr.unipu.duda.justintime.model.Queue;
+import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.ViewHolder>{
 
     Context context;
-    List<Queue> queues;
+    List<Reservation> reservations;
 
-    public ReservationAdapter(Context context, List<Queue> queues) {
+    public ReservationAdapter(Context context, List<Reservation> reservations) {
         this.context = context;
-        this.queues = queues;
+        this.reservations = reservations;
     }
 
     @Override
     public ReservationAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.reservation_item, parent, false);
-        return new ReservationAdapter.ViewHolder(v, context, (ArrayList<Queue>)queues);
+        return new ReservationAdapter.ViewHolder(v, context, (ArrayList<Reservation>) reservations);
     }
 
     @Override
     public void onBindViewHolder(ReservationAdapter.ViewHolder holder, int position) {
-        final Queue queue = queues.get(position);
-        holder.nameView.setText(queue.getFacility().getName() + " - " + queue.getName());
-        holder.myNumber.setText(String.valueOf(queue.getMyNumber()));
-        holder.currentNumber.setText(String.valueOf(queue.getCurrentNumber()));
+        final Reservation reservation = reservations.get(position);
+        holder.nameView.setText(reservation.getFacility().getName() + " - " + reservation.getQueue().getName());
+        holder.myNumber.setText(String.valueOf(reservation.getNumber()));
+        holder.currentNumber.setText(String.valueOf(reservation.getQueue().getCurrent()));
 
         holder.exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +64,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         .setPositiveButton("Da", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface arg0, int arg1) {
-                                exitQueue(queue);
+                                exitQueue(reservation);
                             }
                         }).create().show();
             }
@@ -72,33 +73,33 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     }
 
     //izlaz iz reda
-    private void exitQueue(Queue queue) {
+    private void exitQueue(Reservation reservation) {
         RequestQueue volleyQueue = Volley.newRequestQueue(context);
-        String url = "https://justin-time.herokuapp.com/queue/removeUser/" + queue.getFacility().getId() + "/" + queue.getId();
-        url += "?access_token=" + ApplicationController.getInstance().getToken();
+//        String url = "https://justin-time.herokuapp.com/queue/removeUser/" + reservation.getFacility().getId() + "/" + r.getId();
+//        url += "?access_token=" + ApplicationController.getInstance().getToken();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("ExitQueue", "onResponse: " +response);
-                Intent intent = new Intent(context, ReservationsActivity.class);
-                //zamjena za recreate() ReservationsActivity
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("ExitQueueError", "onResponse: " +error);
-            }
-        });
-
-        volleyQueue.add(request);
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE, url, null, new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                Log.d("ExitQueue", "onResponse: " +response);
+//                Intent intent = new Intent(context, ReservationsActivity.class);
+//                //zamjena za recreate() ReservationsActivity
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                context.startActivity(intent);
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d("ExitQueueError", "onResponse: " +error);
+//            }
+//        });
+//
+//        volleyQueue.add(request);
     }
 
     @Override
     public int getItemCount() {
-        return queues.size();
+        return reservations.size();
     }
 
 
@@ -111,9 +112,9 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         ImageButton exitButton;
 
 
-        public ViewHolder(View view, Context ctx, ArrayList<Queue> queueList) {
+        public ViewHolder(View view, Context ctx, ArrayList<Reservation> reservationList) {
             super(view);
-            queues = queueList;
+            reservations = reservationList;
             context = ctx;
 
             nameView = (TextView) view.findViewById(R.id.tvReservationName);

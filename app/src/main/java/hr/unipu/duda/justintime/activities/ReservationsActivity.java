@@ -26,6 +26,7 @@ import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.adapters.ReservationAdapter;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
+import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class ReservationsActivity extends AppCompatActivity {
@@ -34,7 +35,7 @@ public class ReservationsActivity extends AppCompatActivity {
     JsonObjectRequest request;
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
-    List <Queue> reservations;
+    List <Reservation> reservations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +44,13 @@ public class ReservationsActivity extends AppCompatActivity {
 
         reservations = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.reservationRecyclerView);
-        recyclerView.setHasFixedSize(false);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ReservationsActivity.this));
 
         progressDialog = new ProgressDialog(ReservationsActivity.this);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
-        progressDialog.setCancelable(false);
+//        progressDialog.setCancelable(false);
         if(!progressDialog.isShowing()) progressDialog.show();
 
 
@@ -59,57 +60,57 @@ public class ReservationsActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 //Log.d("RESPONSE", "Response: " +response);
-                try {
-                    //bitni podaci su unutar queuedFacilities JSON objekta, ostali nisu bitni ovdje
-                    JSONObject queuedFacilities = response.getJSONObject("queuedFacilities");
-                    Log.d("queuedFacilities", queuedFacilities.toString());
-                    //id-ovi redova su ključevi i nisu unaprijed poznati (ovise o korisniku)
-                    JSONArray queuedFacilitiesIds = queuedFacilities.names();
-                    Log.d("queuedFacilitiesIds", queuedFacilitiesIds.toString());
-
-                    //prolaz kroz sve ustanove u kojima korisnik čeka u redu
-                    for(int i=0;i<queuedFacilitiesIds.length();i++) {
-                        JSONObject queuedFacility = queuedFacilities.getJSONObject(queuedFacilitiesIds.getString(i));
-                        Log.d("queuedFacility", queuedFacility.toString());
-
-                        //postavljanje podataka o ustanovi
-                        Facility facility = new Facility();
-                        facility.setName(queuedFacility.getString("name"));
-                        facility.setId(queuedFacility.getString("id"));
-
-                        //queues nije ni array ni objekt? nekakva greška u parsiranju
-                        //ovako pokaže string Log.d("queuedFacilityQueues", queuedFacility.optString("queues"));
-                        // {"5878d3f9b3646427748afe8d":{"id":"5878d3f9b3646427748afe8d","name":"Referada","priority":1}}
-
-                        //prevođenje pročitanog JSON teksta u array koji se može parsirati
-                        String queueStringAll = queuedFacility.optString("queues");
-                        String queueString = "[" + queueStringAll + "]";
-                        JSONArray queues = new JSONArray(queueString);
-
-                        //prolaz kroz svaki red iznad pročitane ustanove ustanove
-                        for(int j=0;j<queues.length();j++) {
-                            JSONObject tempObject = queues.getJSONObject(j);
-                            Log.d("tempObject", tempObject.toString());
-                            JSONArray tempObjectIds = tempObject.names();
-                            for(int k=0;k<tempObjectIds.length();k++) {
-                                JSONObject tempQueue = tempObject.getJSONObject(tempObjectIds.getString(k));
-                                Log.d("tempQueue", tempQueue.toString());
-                                //postavljanje podataka o pročitanom redu
-                                Queue queue = new Queue();
-                                queue.setFacility(facility);
-                                queue.setId(tempQueue.getString("id"));
-                                queue.setName(tempQueue.getString("name"));
-                                //korisnikov broj
-                                queue.setMyNumber(tempQueue.getInt("priority"));
-                                //poseban request za dohvaćanje trenutnog broja u redu
-                                getCurrentNumber(queue);
-                            }
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-
-                }
+//                try {
+//                    //bitni podaci su unutar queuedFacilities JSON objekta, ostali nisu bitni ovdje
+//                    JSONObject queuedFacilities = response.getJSONObject("queuedFacilities");
+//                    Log.d("queuedFacilities", queuedFacilities.toString());
+//                    //id-ovi redova su ključevi i nisu unaprijed poznati (ovise o korisniku)
+//                    JSONArray queuedFacilitiesIds = queuedFacilities.names();
+//                    Log.d("queuedFacilitiesIds", queuedFacilitiesIds.toString());
+//
+//                    //prolaz kroz sve ustanove u kojima korisnik čeka u redu
+//                    for(int i=0;i<queuedFacilitiesIds.length();i++) {
+//                        JSONObject queuedFacility = queuedFacilities.getJSONObject(queuedFacilitiesIds.getString(i));
+//                        Log.d("queuedFacility", queuedFacility.toString());
+//
+//                        //postavljanje podataka o ustanovi
+//                        Facility facility = new Facility();
+//                        facility.setName(queuedFacility.getString("name"));
+//                        facility.setId(queuedFacility.getString("id"));
+//
+//                        //queues nije ni array ni objekt? nekakva greška u parsiranju
+//                        //ovako pokaže string Log.d("queuedFacilityQueues", queuedFacility.optString("queues"));
+//                        // {"5878d3f9b3646427748afe8d":{"id":"5878d3f9b3646427748afe8d","name":"Referada","priority":1}}
+//
+//                        //prevođenje pročitanog JSON teksta u array koji se može parsirati
+//                        String queueStringAll = queuedFacility.optString("queues");
+//                        String queueString = "[" + queueStringAll + "]";
+//                        JSONArray queues = new JSONArray(queueString);
+//
+//                        //prolaz kroz svaki red iznad pročitane ustanove ustanove
+//                        for(int j=0;j<queues.length();j++) {
+//                            JSONObject tempObject = queues.getJSONObject(j);
+//                            Log.d("tempObject", tempObject.toString());
+//                            JSONArray tempObjectIds = tempObject.names();
+//                            for(int k=0;k<tempObjectIds.length();k++) {
+//                                JSONObject tempQueue = tempObject.getJSONObject(tempObjectIds.getString(k));
+//                                Log.d("tempQueue", tempQueue.toString());
+//                                //postavljanje podataka o pročitanom redu
+//                                Queue queue = new Queue();
+//                                queue.setFacility(facility);
+//                                queue.setId(tempQueue.getString("id"));
+//                                queue.setName(tempQueue.getString("name"));
+//                                //korisnikov broj
+//                                queue.setMyNumber(tempQueue.getInt("priority"));
+//                                //poseban request za dohvaćanje trenutnog broja u redu
+//                                getCurrentNumber(queue);
+//                            }
+//                        }
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//
+//                }
 
                 if(progressDialog.isShowing()) progressDialog.dismiss();
             }
@@ -138,7 +139,7 @@ public class ReservationsActivity extends AppCompatActivity {
             }
         });
 
-        volleyQueue.add(request);
+        //volleyQueue.add(request);
 
         volleyQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
@@ -151,31 +152,5 @@ public class ReservationsActivity extends AppCompatActivity {
         });
 
 
-    }
-
-    private void getCurrentNumber(final Queue queue) {
-        // dohvaćanje trenutnog broja svakog reda
-        String url = ApplicationController.API_URL + "/queue/currentUser/" + queue.getId();
-
-        JsonObjectRequest priorityRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    queue.setCurrentNumber(response.getInt("priority"));
-                    reservations.add(queue);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("getCurrentNumber", "onErrorResponse: " + error.networkResponse.statusCode);
-                queue.setCurrentNumber(0);
-                reservations.add(queue);
-            }
-        });
-
-        volleyQueue.add(priorityRequest);
     }
 }

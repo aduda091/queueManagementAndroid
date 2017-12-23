@@ -1,9 +1,6 @@
 package hr.unipu.duda.justintime.model;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Facility {
 
     private String id;
@@ -11,11 +8,10 @@ public class Facility {
     private String address;
     private String telephone;
     private String mail;
-    private List<Queue> queues;
 
 
     public Facility() {
-        queues = new ArrayList<>();
+
     }
 
 
@@ -59,17 +55,6 @@ public class Facility {
         this.telephone = telephone;
     }
 
-    public List<Queue> getQueues() {
-        return queues;
-    }
-
-    public void setQueues(List<Queue> queues) {
-        this.queues = queues;
-    }
-
-    public void addQueue(Queue queue) {
-        queues.add(queue);
-    }
 
     @Override
     public String toString() {

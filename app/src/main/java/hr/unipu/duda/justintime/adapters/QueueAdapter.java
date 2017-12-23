@@ -35,10 +35,10 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(QueueAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         final Queue queue = queues.get(position);
         holder.queueName.setText(queue.getName());
-        holder.queuePriority.setText(String.valueOf(queue.getPriority()));
+        holder.queuePriority.setText(String.valueOf(queue.getCurrent()));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder>{
             intent.putExtra("queueName", queue.getName());
             intent.putExtra("facilityId", queue.getFacility().getId());
             intent.putExtra("facilityName", queue.getFacility().getName());
-            intent.putExtra("queuePriority", queue.getPriority());
+            intent.putExtra("queuePriority", queue.getCurrent());
             context.startActivity(intent);
         }
     }

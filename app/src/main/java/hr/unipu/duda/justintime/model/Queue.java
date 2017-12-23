@@ -1,19 +1,15 @@
 package hr.unipu.duda.justintime.model;
 
 
-import java.util.LinkedHashMap;
-
 public class Queue {
 
     private String id;
     private String name;
-    private int priority = 0;
     private Facility facility;
-    private int myNumber = 14;
-    private int currentNumber = 8;
+    private int next = 1;
+    private int current = 0;
 
     public Queue() {
-        //priority = (int) (Math.random()*10)+1;
     }
 
     public Queue(String id, String name) {
@@ -45,28 +41,20 @@ public class Queue {
         this.facility = facility;
     }
 
-    public int getPriority() {
-        return priority;
+    public int getNext() {
+        return next;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
+    public void setNext(int next) {
+        this.next = next;
     }
 
-    public int getMyNumber() {
-        return myNumber;
+    public int getCurrent() {
+        return current;
     }
 
-    public void setMyNumber(int myNumber) {
-        this.myNumber = myNumber;
-    }
-
-    public int getCurrentNumber() {
-        return currentNumber;
-    }
-
-    public void setCurrentNumber(int currentNumber) {
-        this.currentNumber = currentNumber;
+    public void setCurrent(int current) {
+        this.current = current;
     }
 
     @Override
