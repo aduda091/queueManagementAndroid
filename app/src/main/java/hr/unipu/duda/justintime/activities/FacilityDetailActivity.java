@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
+import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class FacilityDetailActivity extends AppCompatActivity {
 
@@ -51,11 +52,11 @@ public class FacilityDetailActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(FacilityDetailActivity.this);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         if(!progressDialog.isShowing()) progressDialog.show();
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://justin-time.herokuapp.com/facility/" +getIntent().getStringExtra("id");
+        String url = ApplicationController.API_URL + "/facilities/" +getIntent().getStringExtra("id");
 
         //čitanje podataka o ustanovi
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -63,7 +64,7 @@ public class FacilityDetailActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 Log.d("JSON Response", response.toString());
                 try {
-                    facility.setId(response.getString("id"));
+                    facility.setId(response.getString("_id"));
                     facility.setName(response.getString("name"));
                     facility.setAddress(response.getString("address"));
                     facility.setTelephone(response.getString("telephone"));

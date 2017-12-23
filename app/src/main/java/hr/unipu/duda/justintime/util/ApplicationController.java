@@ -22,15 +22,15 @@ import java.util.List;
 
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
+import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.model.User;
 
 
 public class ApplicationController extends Application{
     private static ApplicationController mInstance;
     public static final String PREFS_NAME = "UserData";
-//    public static final String API_URL = "https://justin-time.herokuapp.com";
     public static final String API_URL = "http://192.168.5.199:3000";
-    public static final int TIMEOUT_MS = 30000;
+
 
     public static final String ID = "id";
     public static final String MAIL = "mail";
@@ -43,8 +43,7 @@ public class ApplicationController extends Application{
     private SharedPreferences.Editor editor;
 
     private RequestQueue volleyQueue;
-    private List<Facility> facilities;
-    private List<Queue> reservations;
+    private List<Reservation> reservations;
 
     public static synchronized ApplicationController getInstance() {
         return mInstance;
@@ -58,48 +57,9 @@ public class ApplicationController extends Application{
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         volleyQueue = Volley.newRequestQueue(this);
 
-        downloadFacilities();
+
     }
 
-    private void downloadFacilities() {
-        //dohvaćanje svih ustanova
-        facilities = new ArrayList<>();
-        String url = API_URL + "/facilities";
-
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                Log.d("downloadFacilities", "onResponse: " +response.toString());
-                for(int i=0; i<response.length();i++) {
-                    try {
-                        JSONObject facilityObject = response.getJSONObject(i);
-                        Facility facility = new Facility();
-                        facility.setId(facilityObject.getString("_id"));
-                        facility.setName(facilityObject.getString("name"));
-                        facilities.add(facility);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
-                //ako je došlo do greške - vjerojatno Heroku još spava, pokušaj ponovno za 5 sekundi
-                //Handler handler = new Handler();
-                //handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        downloadFacilities();
-//                    }
-//                }, 5000);
-            }
-        });
-//        request.setRetryPolicy(new DefaultRetryPolicy(TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        volleyQueue.add(request);
-    }
 
     public void downloadReservations() {
 
@@ -160,7 +120,7 @@ public class ApplicationController extends Application{
         editor.apply();
     }
 
-    public List<Facility> getFacilities() {
-        return facilities;
+    public List<Reservation> getReservations() {
+        return reservations;
     }
 }

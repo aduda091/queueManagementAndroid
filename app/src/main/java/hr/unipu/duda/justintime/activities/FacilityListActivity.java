@@ -35,15 +35,17 @@ public class FacilityListActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     List<Facility> facilities;
-    Handler handler;
+    RequestQueue volleyQueue;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facility_list);
         setTitle("Ustanove");
 
+        volleyQueue = Volley.newRequestQueue(this);
+
         recyclerView = (RecyclerView) findViewById(R.id.facilityRecyclerView);
-        recyclerView.setHasFixedSize(false);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         progressDialog = new ProgressDialog(FacilityListActivity.this);
@@ -51,7 +53,6 @@ public class FacilityListActivity extends AppCompatActivity {
         progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
         if(!progressDialog.isShowing()) progressDialog.show();
 
-        handler = new Handler();
         populateFacilities();
 
 
@@ -60,29 +61,41 @@ public class FacilityListActivity extends AppCompatActivity {
     }
 
     private void populateFacilities() {
-        facilities = ApplicationController.getInstance().getFacilities();
-        adapter = new FacilityAdapter(FacilityListActivity.this, facilities);
-        recyclerView.setAdapter(adapter);
+        //dohvaćanje svih ustanova
+        facilities = new ArrayList<>();
+        String url = ApplicationController.API_URL + "/facilities";
 
-        //nisu se stigle učitati ustanove, pokušaj ponovno
-        if(facilities.isEmpty()) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (facilities.isEmpty()) {
-                        populateFacilities();
-                    } else {
-                        //sakrij progress dialog i osvježi popis
-                        if (progressDialog.isShowing()) progressDialog.dismiss();
-                        adapter.notifyDataSetChanged();
-                        handler.removeCallbacks(this);
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+//                Log.d("populateFacilities", "onResponse: " +response.toString());
+                for(int i=0; i<response.length();i++) {
+                    try {
+                        JSONObject facilityObject = response.getJSONObject(i);
+                        Facility facility = new Facility();
+                        facility.setId(facilityObject.getString("_id"));
+                        facility.setName(facilityObject.getString("name"));
+                        facilities.add(facility);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
-            }, 5000);
-        } else {
-            //učitale su se ustanove, sakrij dialog
-            if (progressDialog.isShowing()) progressDialog.dismiss();
-            adapter.notifyDataSetChanged();
-        }
+                adapter = new FacilityAdapter(FacilityListActivity.this, facilities);
+                recyclerView.setAdapter(adapter);
+                //učitale su se ustanove, sakrij dialog
+                if (progressDialog.isShowing()) progressDialog.dismiss();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
+                //učitale su se ustanove, sakrij dialog
+                if (progressDialog.isShowing()) progressDialog.dismiss();
+
+            }
+        });
+
+        volleyQueue.add(request);
     }
 }
