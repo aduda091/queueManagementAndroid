@@ -14,8 +14,8 @@ import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.model.User;
 
 
-public class ApplicationController extends Application {
-    private static ApplicationController mInstance;
+public class AppController extends Application {
+    private static AppController mInstance;
     public static final String PREFS_NAME = "UserData";
     public static final String API_URL = "http://192.168.5.199:3000";
 
@@ -33,7 +33,7 @@ public class ApplicationController extends Application {
     private RequestQueue volleyQueue;
     private List<Reservation> reservations;
 
-    public static synchronized ApplicationController getInstance() {
+    public static synchronized AppController getInstance() {
         return mInstance;
     }
 

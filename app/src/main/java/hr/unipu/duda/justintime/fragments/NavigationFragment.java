@@ -14,7 +14,7 @@ import hr.unipu.duda.justintime.activities.FacilityListActivity;
 import hr.unipu.duda.justintime.activities.LoginActivity;
 import hr.unipu.duda.justintime.activities.ProfileActivity;
 import hr.unipu.duda.justintime.activities.ReservationsActivity;
-import hr.unipu.duda.justintime.util.ApplicationController;
+import hr.unipu.duda.justintime.util.AppController;
 
 
 public class NavigationFragment extends Fragment {
@@ -93,7 +93,7 @@ public class NavigationFragment extends Fragment {
             public void onClick(View view) {
                 if (!currentActivityName.equalsIgnoreCase(ReservationsActivity.class.getSimpleName())) {
                     Intent intent;
-                    if (ApplicationController.getInstance().isRemembered()) {
+                    if (AppController.getInstance().isRemembered()) {
                         //korisnik je prijavljen
                         intent = new Intent(getActivity(), ReservationsActivity.class);
                     } else {
@@ -116,7 +116,7 @@ public class NavigationFragment extends Fragment {
             public void onClick(View v) {
                 if (!currentActivityName.equalsIgnoreCase(ProfileActivity.class.getSimpleName())) {
                     Intent intent;
-                    if (ApplicationController.getInstance().isRemembered()) {
+                    if (AppController.getInstance().isRemembered()) {
                         //korisnik je prijavljen
                         intent = new Intent(getActivity(), ProfileActivity.class);
                     } else {

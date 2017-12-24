@@ -14,7 +14,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,9 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import hr.unipu.duda.justintime.R;
-import hr.unipu.duda.justintime.fragments.NavigationFragment;
 import hr.unipu.duda.justintime.model.Facility;
-import hr.unipu.duda.justintime.util.ApplicationController;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class FacilityDetailActivity extends AppCompatActivity {
 
@@ -56,7 +54,7 @@ public class FacilityDetailActivity extends AppCompatActivity {
         if(!progressDialog.isShowing()) progressDialog.show();
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = ApplicationController.API_URL + "/facilities/" +getIntent().getStringExtra("id");
+        String url = AppController.API_URL + "/facilities/" +getIntent().getStringExtra("id");
 
         //čitanje podataka o ustanovi
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

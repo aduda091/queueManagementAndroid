@@ -26,7 +26,7 @@ import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.adapters.QueueAdapter;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
-import hr.unipu.duda.justintime.util.ApplicationController;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class QueueListActivity extends AppCompatActivity {
 
@@ -67,7 +67,7 @@ public class QueueListActivity extends AppCompatActivity {
     private void populateQueues() {
         //dohvaćanje svih redova trenutne ustanove
         queues = new ArrayList<>();
-        String url = ApplicationController.API_URL + "/facilities/" +facility.getId();
+        String url = AppController.API_URL + "/facilities/" +facility.getId();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

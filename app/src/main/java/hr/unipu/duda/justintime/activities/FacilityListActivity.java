@@ -2,7 +2,6 @@ package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +26,7 @@ import java.util.List;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.adapters.FacilityAdapter;
 import hr.unipu.duda.justintime.model.Facility;
-import hr.unipu.duda.justintime.util.ApplicationController;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class FacilityListActivity extends AppCompatActivity {
 
@@ -63,7 +62,7 @@ public class FacilityListActivity extends AppCompatActivity {
     private void populateFacilities() {
         //dohvaćanje svih ustanova
         facilities = new ArrayList<>();
-        String url = ApplicationController.API_URL + "/facilities";
+        String url = AppController.API_URL + "/facilities";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override

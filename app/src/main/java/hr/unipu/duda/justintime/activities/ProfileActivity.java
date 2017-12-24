@@ -26,7 +26,7 @@ import java.util.Map;
 
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.model.User;
-import hr.unipu.duda.justintime.util.ApplicationController;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -45,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        user = ApplicationController.getInstance().getUser();
+        user = AppController.getInstance().getUser();
         setTitle(user.getFirstName() + " " + user.getLastName() + " - postavke profila");
 
         etName = (EditText) findViewById(R.id.etName);
@@ -72,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ApplicationController.getInstance().logout();
+                AppController.getInstance().logout();
                 finishAndRemoveTask();
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -171,7 +171,7 @@ public class ProfileActivity extends AppCompatActivity {
             user.setMail(userJsonObject.getString("mail"));
 
             //spremi učitane podatke u localStorage
-            ApplicationController.getInstance().updateUser(user);
+            AppController.getInstance().updateUser(user);
 
             //osvježi polja za unos i naslov
             setTitle(user.getFirstName() + " " + user.getLastName() + " - postavke profila");

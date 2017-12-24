@@ -15,8 +15,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -24,10 +22,8 @@ import java.util.List;
 
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.adapters.ReservationAdapter;
-import hr.unipu.duda.justintime.model.Facility;
-import hr.unipu.duda.justintime.model.Queue;
 import hr.unipu.duda.justintime.model.Reservation;
-import hr.unipu.duda.justintime.util.ApplicationController;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class ReservationsActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
@@ -55,7 +51,7 @@ public class ReservationsActivity extends AppCompatActivity {
 
 
         volleyQueue = Volley.newRequestQueue(this);
-        String url = ApplicationController.API_URL + "/queue/getQueuedUser?access_token=" + ApplicationController.getInstance().getToken();
+        String url = AppController.API_URL + "/queue/getQueuedUser?access_token=" + AppController.getInstance().getToken();
         request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

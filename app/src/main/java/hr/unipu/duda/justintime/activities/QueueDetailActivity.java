@@ -29,7 +29,7 @@ import java.util.Map;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.model.Facility;
 import hr.unipu.duda.justintime.model.Queue;
-import hr.unipu.duda.justintime.util.ApplicationController;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class QueueDetailActivity extends AppCompatActivity {
     TextView facilityNameTextView, queueNameTextView, queueCurrentNumberTextView, queueCurrentText;
@@ -115,7 +115,7 @@ public class QueueDetailActivity extends AppCompatActivity {
     }
 
     private void updateData() {
-        String url = ApplicationController.API_URL + "/queues/" +queue.getId();
+        String url = AppController.API_URL + "/queues/" +queue.getId();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -138,7 +138,7 @@ public class QueueDetailActivity extends AppCompatActivity {
     }
 
     private void attemptEnterQueue() {
-        String url = ApplicationController.API_URL + "/reservations/" + queue.getId();
+        String url = AppController.API_URL + "/reservations/" + queue.getId();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -184,7 +184,7 @@ public class QueueDetailActivity extends AppCompatActivity {
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return ApplicationController.getInstance().getAuthorizationHeader();
+                return AppController.getInstance().getAuthorizationHeader();
             }
         };
 
