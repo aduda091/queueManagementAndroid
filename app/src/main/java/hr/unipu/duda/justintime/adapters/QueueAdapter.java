@@ -75,6 +75,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder>{
             intent.putExtra("facilityId", queue.getFacility().getId());
             intent.putExtra("facilityName", queue.getFacility().getName());
             intent.putExtra("queuePriority", queue.getCurrent());
+            intent.putExtra("queueNext", queue.getNext());
             context.startActivity(intent);
         }
     }

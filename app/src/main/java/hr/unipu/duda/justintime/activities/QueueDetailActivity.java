@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,7 +21,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
 
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.model.Facility;
@@ -28,10 +32,9 @@ import hr.unipu.duda.justintime.model.Queue;
 import hr.unipu.duda.justintime.util.ApplicationController;
 
 public class QueueDetailActivity extends AppCompatActivity {
-    TextView facilityNameTextView, queueNameTextView, priorityTextView, myPriorityTextView;
+    TextView facilityNameTextView, queueNameTextView, queueCurrentNumberTextView, queueCurrentText;
     Button reserveButton;
     Animation animation;
-    int nextNumber;
     Queue queue;
     Facility facility;
     RequestQueue volleyQueue;
@@ -45,8 +48,8 @@ public class QueueDetailActivity extends AppCompatActivity {
 
         facilityNameTextView = (TextView) findViewById(R.id.facilityNameTextView);
         queueNameTextView = (TextView) findViewById(R.id.queueNameTextView);
-        priorityTextView = (TextView) findViewById(R.id.priorityTextView);
-        myPriorityTextView = (TextView) findViewById(R.id.myPriorityTextView);
+        queueCurrentText = findViewById(R.id.queueCurrentText);
+        queueCurrentNumberTextView = (TextView) findViewById(R.id.queueCurrentNumberTextView);
         reserveButton = (Button) findViewById(R.id.reserveButton);
 
         animation = AnimationUtils.loadAnimation(this, R.anim.zoomin);
@@ -61,15 +64,14 @@ public class QueueDetailActivity extends AppCompatActivity {
         queue.setId(getIntent().getStringExtra("queueId"));
         queue.setName(getIntent().getStringExtra("queueName"));
         queue.setCurrent(getIntent().getIntExtra("queuePriority", 0));
+        queue.setNext(getIntent().getIntExtra("queueNext", 0));
 
         setTitle(facility.getName() + " - " + queue.getName());
 
         facilityNameTextView.setText(facility.getName());
         queueNameTextView.setText(queue.getName());
-        //todo: ovo zapravo nije trenutni broj nego zadnji broj u redu
-        priorityTextView.setText("Trenutni broj: " + queue.getCurrent());
-        nextNumber = queue.getCurrent()+1;
-        reserveButton.setText("Uzmi broj:\n" + nextNumber);
+
+        updateText();
 
         reserveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,8 +89,6 @@ public class QueueDetailActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 reserveButton.setVisibility(View.GONE);
-                //myPriorityTextView.setText("Vaš broj je " + nextNumber);
-                //myPriorityTextView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -96,11 +96,49 @@ public class QueueDetailActivity extends AppCompatActivity {
 
             }
         });
+
+        updateData();
+    }
+
+    private void updateText() {
+        if(queue.getCurrent() != 0) {
+            queueCurrentText.setText("Trenutno se poslužuje broj: ");
+            queueCurrentNumberTextView.setVisibility(View.VISIBLE);
+            queueCurrentNumberTextView.setText(String.valueOf(queue.getCurrent()));
+        } else {
+            queueCurrentText.setText("Čeka se na službenika");
+            queueCurrentNumberTextView.setText("");
+            queueCurrentNumberTextView.setVisibility(View.GONE);
+        }
+
+        reserveButton.setText("Uzmi broj:\n" + queue.getNext());
+    }
+
+    private void updateData() {
+        String url = ApplicationController.API_URL + "/queues/" +queue.getId();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    queue.setCurrent(response.getInt("current"));
+                    queue.setNext(response.getInt("next"));
+                    updateText();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("QueueUpdate", "onErrorResponse: " + error.getMessage());
+            }
+        });
+
+        volleyQueue.add(request);
     }
 
     private void attemptEnterQueue() {
-        String url = ApplicationController.API_URL + "queue/addUser/" + facility.getId() + "/" + queue.getId();
-        url += "?access_token=" + ApplicationController.getInstance().getToken();
+        String url = ApplicationController.API_URL + "/reservations/" + queue.getId();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -114,7 +152,7 @@ public class QueueDetailActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.d("AttemptEnterFail", "onErrorResponse: " + error);
                 if(error.networkResponse.statusCode == 409) {
-                    //todo: ne dati korisniku da pokuša uzeti broj ako je već u redu (spremiti sve redove u kojima je korisnik)
+                    //todo: ne dati korisniku da pokuša uzeti broj ako je već u redu (spremiti sve redove u kojima je korisnik)?
                     AlertDialog.Builder builder = new AlertDialog.Builder(QueueDetailActivity.this);
                     builder.setMessage("Već ste u ovom redu")
                             .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
@@ -122,12 +160,33 @@ public class QueueDetailActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Intent intent = new Intent(QueueDetailActivity.this, ReservationsActivity.class);
                                     startActivity(intent);
+                                    finish();
+                                }
+                            })
+                            .create().show();
+                }
+                if(error.networkResponse.statusCode == 401) {
+                    //todo: vratiti korisnika na ovaj red nakon uspješne prijave?
+                    AlertDialog.Builder builder = new AlertDialog.Builder(QueueDetailActivity.this);
+                    builder.setMessage("Morate se prijaviti prije ulaska u red")
+                            .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent = new Intent(QueueDetailActivity.this, LoginActivity.class);
+                                    intent.putExtra("attemptedQueue", queue.getId());
+                                    startActivity(intent);
+                                    finish();
                                 }
                             })
                             .create().show();
                 }
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return ApplicationController.getInstance().getAuthorizationHeader();
+            }
+        };
 
         volleyQueue.add(request);
     }

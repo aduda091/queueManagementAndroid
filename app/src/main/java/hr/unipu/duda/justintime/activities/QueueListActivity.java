@@ -81,6 +81,7 @@ public class QueueListActivity extends AppCompatActivity {
                         queue.setName(object.getString("name"));
                         queue.setFacility(facility);
                         queue.setCurrent(object.getInt("current"));
+                        queue.setNext(object.getInt("next"));
                         queues.add(queue);
                     }
 
@@ -110,12 +111,6 @@ public class QueueListActivity extends AppCompatActivity {
         });
 
         volleyQueue.add(request);
-//        volleyQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
-//            @Override
-//            public void onRequestFinished(Request<Object> request) {
-//
-//            }
-//        });
     }
 
 

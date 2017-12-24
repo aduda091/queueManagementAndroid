@@ -2,31 +2,19 @@ package hr.unipu.duda.justintime.util;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.util.Log;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import hr.unipu.duda.justintime.model.Facility;
-import hr.unipu.duda.justintime.model.Queue;
 import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.model.User;
 
 
-public class ApplicationController extends Application{
+public class ApplicationController extends Application {
     private static ApplicationController mInstance;
     public static final String PREFS_NAME = "UserData";
     public static final String API_URL = "http://192.168.5.199:3000";
@@ -56,7 +44,6 @@ public class ApplicationController extends Application{
         mInstance = this;
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         volleyQueue = Volley.newRequestQueue(this);
-
 
     }
 
@@ -103,6 +90,13 @@ public class ApplicationController extends Application{
 
     public String getToken() {
         return sharedPreferences.getString(TOKEN, "");
+    }
+    public Map getAuthorizationHeader() {
+        HashMap<String, String> header = new HashMap<>();
+        header.put("Authorization", getToken());
+        return header;
+
+
     }
 
     public boolean isRemembered() {
