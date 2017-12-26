@@ -19,14 +19,18 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.fragments.NavigationFragment;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText etName;
@@ -70,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -86,19 +91,18 @@ public class RegisterActivity extends AppCompatActivity {
                 final String password = etPassword.getText().toString().trim();
                 final String password2 = etPassword2.getText().toString().trim();
 
-                String url = "https://justin-time.herokuapp.com/user/create";
+                String url = AppController.API_URL + "/users/register";
                 final HashMap<String, String> params = new HashMap<String, String>();
                 params.put("firstName", name);
                 params.put("lastName", lastName);
                 params.put("mail", email);
                 params.put("password", password);
 
-
                 if(!progressDialog.isShowing()) progressDialog.show();
 
-                StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         if(progressDialog.isShowing()) progressDialog.dismiss();
                         Log.d("success", "onResponse: " + response);
                         AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
@@ -121,18 +125,20 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Log.d("error", "onErrorResponse: " + error.networkResponse.statusCode);
                         if(progressDialog.isShowing()) progressDialog.dismiss();
+                        String message = "";
+                        if(error.networkResponse.statusCode == 409) {
+                            message = "odabrani mail je zauzet.";
+                        }
+                        if(error.networkResponse.statusCode == 404) {
+                            message = "pokušajte ponovno.";
+                        }
                         AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                        builder.setMessage("Neuspješna registracija, pokušajte ponovno")
+                        builder.setMessage("Neuspješna registracija, " +message)
                                 .setNegativeButton("U redu", null)
                                 .create()
                                 .show();
                     }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        return params;
-                    }
-                };
+                });
 
                 queue.add(request);
             }
