@@ -2,6 +2,7 @@ package hr.unipu.duda.justintime.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -151,8 +152,17 @@ public class QueueDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("AttemptEnterQueue", "onResponse: " +response);
-                Intent intent = new Intent(QueueDetailActivity.this, ReservationsActivity.class);
-                startActivity(intent);
+                AppController.getInstance().downloadReservations();
+                //pričekaj par sekundi da se osvježe rezervacije pa preusmjeri korisnika
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(QueueDetailActivity.this, ReservationsActivity.class);
+                        startActivity(intent);
+                    }
+                }, 2000);
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -174,7 +184,6 @@ public class QueueDetailActivity extends AppCompatActivity {
                 }
                 if(error.networkResponse.statusCode == 401) {
                     //todo: vratiti korisnika na ovaj red nakon uspješne prijave?
-                    /*
                     AlertDialog.Builder builder = new AlertDialog.Builder(QueueDetailActivity.this);
                     builder.setMessage("Morate se prijaviti prije ulaska u red")
                             .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
@@ -186,7 +195,7 @@ public class QueueDetailActivity extends AppCompatActivity {
                                     finish();
                                 }
                             })
-                            .create().show();*/
+                            .create().show();
                 }
             }
         }) {

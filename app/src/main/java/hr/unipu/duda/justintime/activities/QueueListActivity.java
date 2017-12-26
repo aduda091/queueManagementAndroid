@@ -59,9 +59,13 @@ public class QueueListActivity extends AppCompatActivity {
         //Volley
         volleyQueue = Volley.newRequestQueue(this);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         populateQueues();
-
-
     }
 
     private void populateQueues() {

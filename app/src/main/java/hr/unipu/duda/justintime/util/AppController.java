@@ -2,14 +2,27 @@ package hr.unipu.duda.justintime.util;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hr.unipu.duda.justintime.model.Facility;
+import hr.unipu.duda.justintime.model.Queue;
 import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.model.User;
 
@@ -45,11 +58,58 @@ public class AppController extends Application {
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         volleyQueue = Volley.newRequestQueue(this);
 
+        if(isRemembered()) downloadReservations();
+
     }
 
 
     public void downloadReservations() {
+        reservations = new ArrayList<>();
+        String url = AppController.API_URL + "/users/me";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("Reservations response", "onResponse: " +response.toString());
+                try {
+                    JSONArray reservationsArray = response.getJSONObject("user").getJSONArray("reservations");
+                    for(int i=0; i<reservationsArray.length();i++) {
+                        JSONObject object = reservationsArray.getJSONObject(i);
+                        JSONObject queueObject = object.getJSONObject("queue");
+                        JSONObject facilityObject = queueObject.getJSONObject("facility");
 
+                        Facility facility = new Facility();
+                        facility.setName(facilityObject.getString("name"));
+
+                        Queue queue = new Queue();
+                        queue.setName(queueObject.getString("name"));
+                        queue.setId(queueObject.getString("_id"));
+                        queue.setCurrent(queueObject.getInt("current"));
+
+                        Reservation reservation = new Reservation();
+                        reservation.setQueue(queue);
+                        reservation.setFacility(facility);
+                        reservation.setNumber(object.getInt("number"));
+                        reservation.setId(object.getString("_id"));
+
+                        reservations.add(reservation);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("reservations error", "onErrorResponse: " +error.getMessage());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return getAuthorizationHeader();
+            }
+        };
+
+        volleyQueue.add(request);
     }
 
     public void saveUser(User user) {

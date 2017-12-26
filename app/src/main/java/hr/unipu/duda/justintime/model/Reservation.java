@@ -2,6 +2,7 @@ package hr.unipu.duda.justintime.model;
 
 
 public class Reservation {
+    private String id;
     private String user;
     private Queue queue;
     private Facility facility;
@@ -17,6 +18,14 @@ public class Reservation {
         this.facility = facility;
         this.time = time;
         this.number = number;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUser() {
