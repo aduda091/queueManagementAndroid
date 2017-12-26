@@ -15,6 +15,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -73,9 +74,9 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AppController.getInstance().logout();
-                finishAndRemoveTask();
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -84,22 +85,22 @@ public class ProfileActivity extends AppCompatActivity {
 
         boolean hasErrors = false;
 
-        if(etName.getText().toString().trim().isEmpty()) {
+        if (etName.getText().toString().trim().isEmpty()) {
             etName.requestFocus();
             etName.setError("Ime ne smije biti prazno");
             hasErrors = true;
         }
-        if(etLastName.getText().toString().trim().isEmpty()) {
+        if (etLastName.getText().toString().trim().isEmpty()) {
             etLastName.requestFocus();
             etLastName.setError("Prezime ne smije biti prazno");
             hasErrors = true;
         }
-        if(etEmail.getText().toString().trim().isEmpty()) {
+        if (etEmail.getText().toString().trim().isEmpty()) {
             etEmail.requestFocus();
             etEmail.setError("E-mail ne smije biti prazan");
             hasErrors = true;
         }
-        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches()) {
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches()) {
             etEmail.requestFocus();
             etEmail.setError("E-mail mora biti valjan");
             hasErrors = true;
@@ -116,27 +117,21 @@ public class ProfileActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
 
         final Map<String, String> params = new HashMap<>();
-        //params.put("id", user.getId());
         params.put("firstName", name);
         params.put("lastName", lastName);
         params.put("mail", email);
-        params.put("access_token", user.getToken());
+//        params.put("token", user.getToken());
 
         Log.d("PARAMS", "saveChanges: " + params.toString());
 
-        String url = "https://justin-time.herokuapp.com/user/update/" + user.getId();
-        //Volley i dalje ima problema sa slanjem parametara u JsonObjectRequestu
-        StringRequest request = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
+        String url = AppController.API_URL + "/users/me";
 
-                try {
-                    JSONObject userJsonObject = new JSONObject(response);
-                    Log.d("ProfileResponse", "onResponse: "+userJsonObject.toString());
-                    saveUser(userJsonObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, new JSONObject(params), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                Log.d("ProfileResponse", "onResponse: " + response.toString());
+                saveUser(response);
 
                 progressBar.setVisibility(View.GONE);
                 btnSave.setEnabled(true);
@@ -144,19 +139,22 @@ public class ProfileActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("ProfileError", "onResponse: "+error.toString());
+                Log.d("ProfileError", "onResponse: " + error.toString());
                 progressBar.setVisibility(View.GONE);
                 btnSave.setEnabled(true);
-
+                String message = "";
+                if(error.networkResponse.statusCode == 409) {
+                    message = "Odabrani mail je zauzet.";
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-                builder.setMessage("Došlo je do pogreške prilikom spremanja podataka!" + error.toString()) //// TODO: ukloniti detaljan ispis greške korisniku
+                builder.setMessage("Došlo je do pogreške prilikom spremanja podataka! " + message)
                         .setPositiveButton("U redu", null)
                         .create().show();
             }
-        }){
+        }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return params;
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return AppController.getInstance().getAuthorizationHeader();
             }
         };
 
