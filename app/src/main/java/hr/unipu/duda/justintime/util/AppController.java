@@ -56,7 +56,7 @@ public class AppController extends Application {
         editor = sharedPreferences.edit();
         editor.putString(ID, user.getId());
         editor.putString(MAIL, user.getMail());
-        editor.putString(PASSWORD, user.getPassword());//todo: za potrebe lakšeg testiranja, nikako u praksi
+        //editor.putString(PASSWORD, user.getPassword());//todo: za potrebe lakšeg testiranja, nikako u praksi
         editor.putString(FIRSTNAME, user.getFirstName());
         editor.putString(LASTNAME, user.getLastName());
         editor.putString(TOKEN, user.getToken());

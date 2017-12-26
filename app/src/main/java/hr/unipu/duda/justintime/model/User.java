@@ -67,4 +67,8 @@ public class User {
     public void setToken(String token) {
         this.token = token;
     }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

@@ -53,7 +53,7 @@ public class QueueListActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(QueueListActivity.this);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         if(!progressDialog.isShowing()) progressDialog.show();
 
         //Volley
