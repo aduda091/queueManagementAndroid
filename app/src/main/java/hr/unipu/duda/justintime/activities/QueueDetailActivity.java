@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -34,6 +36,8 @@ import hr.unipu.duda.justintime.util.AppController;
 public class QueueDetailActivity extends AppCompatActivity {
     TextView facilityNameTextView, queueNameTextView, queueCurrentNumberTextView, queueCurrentText;
     Button reserveButton;
+    RelativeLayout ticketTextContainer;
+    ImageView ticketImageView;
     Animation animation;
     Queue queue;
     Facility facility;
@@ -51,6 +55,8 @@ public class QueueDetailActivity extends AppCompatActivity {
         queueCurrentText = findViewById(R.id.queueCurrentText);
         queueCurrentNumberTextView = (TextView) findViewById(R.id.queueCurrentNumberTextView);
         reserveButton = (Button) findViewById(R.id.reserveButton);
+        ticketTextContainer = (RelativeLayout) findViewById(R.id.ticketTextContainer);
+        ticketImageView = findViewById(R.id.ticketImageView);
 
         animation = AnimationUtils.loadAnimation(this, R.anim.zoomin);
 
@@ -77,7 +83,7 @@ public class QueueDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 attemptEnterQueue();
-                reserveButton.startAnimation(animation);
+                ticketTextContainer.startAnimation(animation);
             }
         });
 
@@ -88,7 +94,8 @@ public class QueueDetailActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                reserveButton.setVisibility(View.GONE);
+                ticketTextContainer.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -111,7 +118,7 @@ public class QueueDetailActivity extends AppCompatActivity {
             queueCurrentNumberTextView.setVisibility(View.GONE);
         }
 
-        reserveButton.setText("Uzmi broj:\n" + queue.getNext());
+        reserveButton.setText("Uzmi\nbroj:\n" + queue.getNext());
     }
 
     private void updateData() {
@@ -167,6 +174,7 @@ public class QueueDetailActivity extends AppCompatActivity {
                 }
                 if(error.networkResponse.statusCode == 401) {
                     //todo: vratiti korisnika na ovaj red nakon uspješne prijave?
+                    /*
                     AlertDialog.Builder builder = new AlertDialog.Builder(QueueDetailActivity.this);
                     builder.setMessage("Morate se prijaviti prije ulaska u red")
                             .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
@@ -178,7 +186,7 @@ public class QueueDetailActivity extends AppCompatActivity {
                                     finish();
                                 }
                             })
-                            .create().show();
+                            .create().show();*/
                 }
             }
         }) {
