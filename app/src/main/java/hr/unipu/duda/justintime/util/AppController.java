@@ -30,7 +30,7 @@ import hr.unipu.duda.justintime.model.User;
 public class AppController extends Application {
     private static AppController mInstance;
     public static final String PREFS_NAME = "UserData";
-    public static final String API_URL = "http://192.168.5.199:3000";
+    public static final String API_URL = "https://dustin-time.herokuapp.com";
 
 
     public static final String ID = "id";

@@ -110,7 +110,7 @@ public class QueueDetailActivity extends AppCompatActivity {
 
     private void updateText() {
         if(queue.getCurrent() != 0) {
-            queueCurrentText.setText("Trenutno se poslužuje broj: ");
+            queueCurrentText.setText("Trenutno se poslužuje: ");
             queueCurrentNumberTextView.setVisibility(View.VISIBLE);
             queueCurrentNumberTextView.setText(String.valueOf(queue.getCurrent()));
         } else {
