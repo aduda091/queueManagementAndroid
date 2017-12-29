@@ -3,6 +3,7 @@ package hr.unipu.duda.justintime.activities;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,6 +37,7 @@ public class QueueListActivity extends AppCompatActivity {
     Facility facility;
     List<Queue> queues;
     RequestQueue volleyQueue;
+    SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +49,19 @@ public class QueueListActivity extends AppCompatActivity {
         setTitle(facility.getName() + " - redovi" );
 
         recyclerView = (RecyclerView) findViewById(R.id.queueRecyclerView);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        progressDialog = new ProgressDialog(QueueListActivity.this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
-        progressDialog.setCancelable(true);
-        if(!progressDialog.isShowing()) progressDialog.show();
+        swipeContainer.setSize(SwipeRefreshLayout.LARGE);
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateQueues();
+            }
+        });
 
         //Volley
         volleyQueue = Volley.newRequestQueue(this);
@@ -69,6 +76,7 @@ public class QueueListActivity extends AppCompatActivity {
     }
 
     private void populateQueues() {
+        swipeContainer.setRefreshing(true);
         //dohvaćanje svih redova trenutne ustanove
         queues = new ArrayList<>();
         String url = AppController.API_URL + "/facilities/" +facility.getId();
@@ -93,15 +101,19 @@ public class QueueListActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                if(progressDialog.isShowing()) progressDialog.dismiss();
                 adapter = new QueueAdapter(QueueListActivity.this, queues);
                 recyclerView.setAdapter(adapter);
+
+                swipeContainer.setRefreshing(false);
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
-                if(progressDialog.isShowing()) progressDialog.dismiss();
+
+                swipeContainer.setRefreshing(false);
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(QueueListActivity.this);
                 builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!")
                         .setNegativeButton("U redu", new DialogInterface.OnClickListener() {

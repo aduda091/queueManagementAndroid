@@ -1,7 +1,7 @@
 package hr.unipu.duda.justintime.activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,11 +30,11 @@ import hr.unipu.duda.justintime.util.AppController;
 
 public class FacilityListActivity extends AppCompatActivity {
 
-    ProgressDialog progressDialog;
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     List<Facility> facilities;
     RequestQueue volleyQueue;
+    SwipeRefreshLayout swipeContainer;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,22 +44,30 @@ public class FacilityListActivity extends AppCompatActivity {
         volleyQueue = Volley.newRequestQueue(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.facilityRecyclerView);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        progressDialog = new ProgressDialog(FacilityListActivity.this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Dohvaćanje podataka u tijeku...");
-        if(!progressDialog.isShowing()) progressDialog.show();
-
-        populateFacilities();
-
-
-
+        swipeContainer.setSize(SwipeRefreshLayout.LARGE);
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateFacilities();
+            }
+        });
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateFacilities();
+    }
+
     private void populateFacilities() {
+        swipeContainer.setRefreshing(true);
         //dohvaćanje svih ustanova
         facilities = new ArrayList<>();
         String url = AppController.API_URL + "/facilities";
@@ -67,8 +75,8 @@ public class FacilityListActivity extends AppCompatActivity {
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.d("populateFacilities", "onResponse: " +response.toString());
-                for(int i=0; i<response.length();i++) {
+                Log.d("populateFacilities", "onResponse: " + response.toString());
+                for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject facilityObject = response.getJSONObject(i);
                         Facility facility = new Facility();
@@ -81,16 +89,14 @@ public class FacilityListActivity extends AppCompatActivity {
                 }
                 adapter = new FacilityAdapter(FacilityListActivity.this, facilities);
                 recyclerView.setAdapter(adapter);
-                //učitale su se ustanove, sakrij dialog
-                if (progressDialog.isShowing()) progressDialog.dismiss();
+                swipeContainer.setRefreshing(false);
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("onErrorResponse", "onErrorResponse: " + error.getMessage());
-                //sakrij dialog
-                if (progressDialog.isShowing()) progressDialog.dismiss();
+                swipeContainer.setRefreshing(false);
                 AlertDialog.Builder builder = new AlertDialog.Builder(FacilityListActivity.this);
                 builder.setMessage("Neuspješan dohvat podataka, molim pokušajte ponovno!")
                         .setNegativeButton("U redu", new DialogInterface.OnClickListener() {
