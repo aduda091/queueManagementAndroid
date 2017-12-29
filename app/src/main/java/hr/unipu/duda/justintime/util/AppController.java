@@ -2,6 +2,7 @@ package hr.unipu.duda.justintime.util;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.model.User;
 
@@ -32,6 +34,7 @@ public class AppController extends Application {
 
     private RequestQueue volleyQueue;
     private List<Reservation> reservations;
+    private MediaPlayer player;
 
     public static synchronized AppController getInstance() {
         return mInstance;
@@ -46,6 +49,7 @@ public class AppController extends Application {
         volleyQueue = Volley.newRequestQueue(this);
 
 //        if(isRemembered()) updateReservations();
+        player = MediaPlayer.create(this, R.raw.chime);
 
     }
 
@@ -87,6 +91,7 @@ public class AppController extends Application {
     public String getToken() {
         return sharedPreferences.getString(TOKEN, "");
     }
+
     public Map getAuthorizationHeader() {
         HashMap<String, String> header = new HashMap<>();
         header.put("Authorization", getToken());
@@ -111,6 +116,25 @@ public class AppController extends Application {
     }
 
     public void setReservations(List<Reservation> reservations) {
+        try {
+            if (this.reservations != null) {
+                for (int i = 0; i < this.reservations.size(); i++) {
+
+                    Reservation oldReservation = this.reservations.get(i);
+                    Reservation newReservation = reservations.get(i);
+
+                    if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
+                        //promijenio se trenutni broj u redu
+                        player.start();
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         this.reservations = reservations;
     }
 

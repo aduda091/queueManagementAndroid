@@ -2,6 +2,7 @@ package hr.unipu.duda.justintime.activities;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +43,7 @@ public class ReservationsActivity extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     List<Reservation> reservations;
     SwipeRefreshLayout swipeContainer;
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class ReservationsActivity extends AppCompatActivity {
         });
 
 
+        handler = new Handler();
     }
 
     @Override
@@ -76,6 +79,13 @@ public class ReservationsActivity extends AppCompatActivity {
         super.onResume();
         populateReservations();
     }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            populateReservations();
+        }
+    };
 
     private void populateReservations() {
         swipeContainer.setRefreshing(true);
@@ -92,6 +102,8 @@ public class ReservationsActivity extends AppCompatActivity {
                     if (reservationsArray.length() == 0) {
                         recyclerView.setVisibility(View.GONE);
                         emptyView.setVisibility(View.VISIBLE);
+
+                        handler.removeCallbacks(runnable);
                     } else {
                         for (int i = 0; i < reservationsArray.length(); i++) {
                             JSONObject object = reservationsArray.getJSONObject(i);
@@ -117,10 +129,13 @@ public class ReservationsActivity extends AppCompatActivity {
 
                         recyclerView.setVisibility(View.VISIBLE);
                         emptyView.setVisibility(View.GONE);
+
+                        handler.postDelayed(runnable, 10000);
                     }
                     adapter = new ReservationAdapter(ReservationsActivity.this, reservations);
                     recyclerView.setAdapter(adapter);
                     AppController.getInstance().setReservations(reservations);
+
 
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
