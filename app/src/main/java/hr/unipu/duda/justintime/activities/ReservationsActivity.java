@@ -1,10 +1,8 @@
 package hr.unipu.duda.justintime.activities;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +35,9 @@ import hr.unipu.duda.justintime.util.AppController;
 
 public class ReservationsActivity extends AppCompatActivity {
 
+    //svakih koliko milisekundi se osvježavaju rezervacije - za potrebe testiranja 10 sekundi,
+    //u produkciji nikako toliko često
+    public static final int DELAY = 10000;
     RequestQueue volleyQueue;
     TextView emptyView;
     RecyclerView recyclerView;
@@ -130,7 +131,7 @@ public class ReservationsActivity extends AppCompatActivity {
                         recyclerView.setVisibility(View.VISIBLE);
                         emptyView.setVisibility(View.GONE);
 
-                        handler.postDelayed(runnable, 10000);
+                        handler.postDelayed(runnable, DELAY);
                     }
                     adapter = new ReservationAdapter(ReservationsActivity.this, reservations);
                     recyclerView.setAdapter(adapter);

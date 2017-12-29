@@ -1,8 +1,13 @@
 package hr.unipu.duda.justintime.util;
 
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -12,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import hr.unipu.duda.justintime.R;
+import hr.unipu.duda.justintime.activities.ReservationsActivity;
 import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.model.User;
 
@@ -117,13 +123,33 @@ public class AppController extends Application {
 
     public void setReservations(List<Reservation> reservations) {
         try {
-            if (this.reservations != null) {
+            if (this.reservations != null && !reservations.isEmpty()) {
                 for (int i = 0; i < this.reservations.size(); i++) {
 
                     Reservation oldReservation = this.reservations.get(i);
-                    Reservation newReservation = reservations.get(i);
+                    Reservation newReservation = reservations.get(i);//indexOutOfBounds exception kad nema više rezervacija
 
-                    if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
+                    if (newReservation.getQueue().getCurrent() == newReservation.getNumber()) {
+                        //korisnik je upravo na redu, prikaži notifikaciju
+
+                        //ali samo ako već nije bila prikazana
+                        if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
+                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                                    .setSmallIcon(R.drawable.hashtag)
+                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                    .setContentTitle(newReservation.getFacility().getName() + " - " + newReservation.getQueue().getName())
+                                    .setContentText("Vi ste na redu!");
+                            notificationBuilder.setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_LIGHTS);
+                            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                                    new Intent(this, ReservationsActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            notificationBuilder.setContentIntent(contentIntent);
+                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+
+                            notificationManagerCompat.notify(1, notificationBuilder.build());
+                        }
+
+                    } else if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
                         //promijenio se trenutni broj u redu
                         player.start();
                     }
