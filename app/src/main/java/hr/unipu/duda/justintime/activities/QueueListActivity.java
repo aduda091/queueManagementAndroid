@@ -48,6 +48,8 @@ public class QueueListActivity extends AppCompatActivity {
         facility.setName(getIntent().getStringExtra("name"));
         setTitle(facility.getName() + " - redovi" );
 
+        volleyQueue = Volley.newRequestQueue(this);
+
         recyclerView = (RecyclerView) findViewById(R.id.queueRecyclerView);
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
 
@@ -63,8 +65,7 @@ public class QueueListActivity extends AppCompatActivity {
             }
         });
 
-        //Volley
-        volleyQueue = Volley.newRequestQueue(this);
+
 
 
     }

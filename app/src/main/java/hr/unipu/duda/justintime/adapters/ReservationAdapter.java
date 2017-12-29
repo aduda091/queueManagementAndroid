@@ -93,8 +93,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         .setPositiveButton("U redu", null)
                         .create().show();
 
-                AppController.getInstance().downloadReservations();
-                //pričekaj par sekundi da se osvježe rezervacije pa preusmjeri korisnika
+                //AppController.getInstance().updateReservations();
+                //pričekaj par sekundi pa preusmjeri korisnika
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -104,7 +104,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                     }
-                }, 2000);
+                }, 1000);
             }
         }, new Response.ErrorListener() {
             @Override

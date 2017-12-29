@@ -152,16 +152,17 @@ public class QueueDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("AttemptEnterQueue", "onResponse: " +response);
-                AppController.getInstance().downloadReservations();
-                //pričekaj par sekundi da se osvježe rezervacije pa preusmjeri korisnika
+//                AppController.getInstance().updateReservations();
+                //pričekaj par sekundi  pa preusmjeri korisnika
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Intent intent = new Intent(QueueDetailActivity.this, ReservationsActivity.class);
                         startActivity(intent);
+                        finish();
                     }
-                }, 2000);
+                }, 1000);
 
             }
         }, new Response.ErrorListener() {
