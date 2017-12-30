@@ -119,6 +119,8 @@ public class AppController extends Application {
         editor.remove(LASTNAME);
         editor.remove(TOKEN);
         editor.apply();
+
+        this.reservations.clear();
     }
 
     public void setReservations(List<Reservation> reservations) {
@@ -135,7 +137,7 @@ public class AppController extends Application {
                         //ali samo ako već nije bila prikazana
                         if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
                             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                                    .setSmallIcon(R.drawable.hashtag)
+                                    .setSmallIcon(R.drawable.hashtag_white)
                                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                                     .setContentTitle(newReservation.getFacility().getName() + " - " + newReservation.getQueue().getName())
                                     .setContentText("Vi ste na redu!");
