@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
         return hasErrors;
     }
 
-    private void getUserData(JSONObject response) {
+    private void getUserData(final JSONObject response) {
 
         User user = new User();
         try {
@@ -182,12 +182,21 @@ public class LoginActivity extends AppCompatActivity {
             //spremi učitane podatke u localStorage
             AppController.getInstance().saveUser(user);
 
+            final Intent intent;
+            //provjeri koliko korisnik ima rezervacija
+            if(response.getJSONArray("reservations").length() > 0) {
+                //ima barem jednu, preusmjeri ga na popis rezervacija
+                intent = new Intent(LoginActivity.this, ReservationsActivity.class);
+            } else {
+                //nema rezervacija, preusmjeri ga na popis ustanova
+                intent = new Intent(LoginActivity.this, FacilityListActivity.class);
+            }
+
             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
             builder.setMessage("Hvala na prijavi, " + user.getFullName() + "!")
                     .setPositiveButton("Nema na čemu", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent intent = new Intent(LoginActivity.this, FacilityListActivity.class);
                             startActivity(intent);
                             finish();
                         }
