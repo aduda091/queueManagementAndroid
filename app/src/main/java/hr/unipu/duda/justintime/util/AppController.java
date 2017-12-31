@@ -146,6 +146,8 @@ public class AppController extends Application {
                                     new Intent(this, ReservationsActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
                             notificationBuilder.setContentIntent(contentIntent);
+                            notificationBuilder.setAutoCancel(true);
+
                             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
 
                             notificationManagerCompat.notify(1, notificationBuilder.build());
