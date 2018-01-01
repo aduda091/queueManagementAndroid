@@ -4,6 +4,8 @@ package hr.unipu.duda.justintime.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -33,7 +35,7 @@ import hr.unipu.duda.justintime.activities.ReservationsActivity;
 import hr.unipu.duda.justintime.model.Reservation;
 import hr.unipu.duda.justintime.util.AppController;
 
-public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.ViewHolder>{
+public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.ViewHolder> {
 
     Context context;
     List<Reservation> reservations;
@@ -55,21 +57,37 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         holder.nameView.setText(reservation.getFacility().getName() + " - " + reservation.getQueue().getName());
         holder.myNumber.setText(String.valueOf(reservation.getNumber()));
         holder.currentNumber.setText(String.valueOf(reservation.getQueue().getCurrent()));
+
+
+        final String dialogTitle, dialogMessage;
+
         //procjena vremena: moj broj - trenutno aktivni broj
-        int approx = reservation.getNumber() - reservation.getQueue().getCurrent();
-        holder.approximateWait.setText("Očekivano vrijeme čekanja: " + approx * 5 + " minuta");
+        final int approx = reservation.getNumber() - reservation.getQueue().getCurrent();
+        if (approx == 0) {
+            //korisnik je upravo na redu
+            holder.approximateWait.setText("Upravo ste na redu!");
+            holder.exitButton.setImageResource(android.R.drawable.ic_menu_directions);
+            holder.exitButton.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+            dialogTitle = "Hvala";
+            dialogMessage = "Gotovi ste s korištenjem usluge?";
+        } else {
+            holder.approximateWait.setText("Očekivano vrijeme čekanja: " + approx * 5 + " minuta");
+            dialogTitle = "Potvrda izlaza";
+            dialogMessage = "Sigurno želite iaći iz reda?";
+        }
 
         holder.exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 new AlertDialog.Builder(context)
-                        .setTitle("Potvrda izlaza")
-                        .setMessage("Sigurno želite izaći iz reda?")
+                        .setTitle(dialogTitle)
+                        .setMessage(dialogMessage)
                         .setNegativeButton("Ne", null)
                         .setPositiveButton("Da", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface arg0, int arg1) {
-                                exitQueue(reservation);
+                                exitQueue(reservation, approx);
                             }
                         }).create().show();
             }
@@ -78,17 +96,24 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     }
 
     //izlaz iz reda
-    private void exitQueue(Reservation reservation) {
+    private void exitQueue(Reservation reservation, int approx) {
         RequestQueue volleyQueue = Volley.newRequestQueue(context);
         String url = AppController.API_URL + "/reservations/" + reservation.getId();
+
+        final String dialogTitle;
+        if(approx == 0) {
+            dialogTitle = "Hvala";
+        } else {
+            dialogTitle = "Rezervacija otkazana";
+        }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("ExitQueue", "onResponse: " +response);
+                Log.d("ExitQueue", "onResponse: " + response);
 
                 new AlertDialog.Builder(context)
-                        .setTitle("Rezervacija otkazana")
+                        .setTitle(dialogTitle)
                         .setMessage("Uspješno ste izašli iz reda")
                         .setPositiveButton("U redu", null)
                         .create().show();
@@ -109,7 +134,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("ExitQueueError", "onResponse: " +error);
+                Log.d("ExitQueueError", "onResponse: " + error);
             }
         }) {
             @Override
@@ -127,7 +152,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameView;
         TextView myNumber;
