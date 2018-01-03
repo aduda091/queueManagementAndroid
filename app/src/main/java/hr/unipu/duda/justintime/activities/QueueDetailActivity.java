@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -152,6 +153,7 @@ public class QueueDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("AttemptEnterQueue", "onResponse: " +response);
+                FirebaseMessaging.getInstance().subscribeToTopic(queue.getId());
 //                AppController.getInstance().updateReservations();
                 //pričekaj par sekundi  pa preusmjeri korisnika
                 Handler handler = new Handler();

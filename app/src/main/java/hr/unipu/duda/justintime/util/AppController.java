@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public class AppController extends Application {
     private SharedPreferences.Editor editor;
 
     private RequestQueue volleyQueue;
-    private List<Reservation> reservations;
+    private Map<String, Reservation> reservations;
     private MediaPlayer player;
 
     public static synchronized AppController getInstance() {
@@ -54,9 +55,8 @@ public class AppController extends Application {
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         volleyQueue = Volley.newRequestQueue(this);
 
-//        if(isRemembered()) updateReservations();
         player = MediaPlayer.create(this, R.raw.chime);
-
+        reservations = new HashMap<>();
     }
 
     public void saveUser(User user) {
@@ -68,8 +68,6 @@ public class AppController extends Application {
         editor.putString(TOKEN, user.getToken());
 
         editor.apply();
-        //korisnik je sad prijavljen, dohvatiti njegove rezervacije
-//        updateReservations();
     }
 
     public void updateUser(User user) {
@@ -120,55 +118,52 @@ public class AppController extends Application {
         editor.remove(TOKEN);
         editor.apply();
 
+        //otkaži sve pretplate i obriši spremljene rezervacije
+        for(String queueId : this.reservations.keySet()) {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(queueId);
+        }
         this.reservations.clear();
     }
 
-    public void setReservations(List<Reservation> reservations) {
-        try {
-            if (this.reservations != null && !reservations.isEmpty()) {
-                for (int i = 0; i < this.reservations.size(); i++) {
+    public void updateReservations(Reservation newReservation) {
+        String queueId = newReservation.getQueue().getId();
+        Reservation oldReservation = this.reservations.put(queueId, newReservation);
+        if(oldReservation != null) {
+            if (newReservation.getQueue().getCurrent() == newReservation.getNumber()) {
+                //korisnik je upravo na redu, prikaži notifikaciju
 
-                    Reservation oldReservation = this.reservations.get(i);
-                    Reservation newReservation = reservations.get(i);//indexOutOfBounds exception kad nema više rezervacija
+                //ali samo ako već nije bila prikazana
+                if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
 
-                    if (newReservation.getQueue().getCurrent() == newReservation.getNumber()) {
-                        //korisnik je upravo na redu, prikaži notifikaciju
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(newReservation.getQueue().getId());
 
-                        //ali samo ako već nije bila prikazana
-                        if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                                    .setSmallIcon(R.drawable.hashtag_white)
-                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                    .setContentTitle(newReservation.getFacility().getName() + " - " + newReservation.getQueue().getName())
-                                    .setContentText("Vi ste na redu!");
-                            notificationBuilder.setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_LIGHTS);
-                            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                                    new Intent(this, ReservationsActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
-                            notificationBuilder.setContentIntent(contentIntent);
-                            notificationBuilder.setAutoCancel(true);
-
-                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-
-                            notificationManagerCompat.notify(1, notificationBuilder.build());
-                        }
-
-                    } else if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
-                        //promijenio se trenutni broj u redu
-                        player.start();
-                    }
+                    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.hashtag_white)
+                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                            .setContentTitle(newReservation.getFacility().getName() + " - " + newReservation.getQueue().getName())
+                            .setContentText("Vi ste na redu!");
+                    //todo: korisnik bira melodiju i kad se događa notifikacija?
+                    //postavke zvuka i svjetla notifikacije
+                    notificationBuilder.setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_LIGHTS);
+                    //zaslon koji će se prikazati dodirom na notifikaciju
+                    PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                            new Intent(this, ReservationsActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                    notificationBuilder.setContentIntent(contentIntent);
+                    //dodir notifikacije je istovremeno uklanja
+                    notificationBuilder.setAutoCancel(true);
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                    //napokon, prikaži notifikaciju
+                    notificationManagerCompat.notify(1, notificationBuilder.build());
                 }
+            } else if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
+                //promijenio se trenutni broj u redu, sviraj ding
+                //todo: korisnik bira želi li ovo čuti?
+                player.start();
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-
-        this.reservations = reservations;
     }
 
-    public List<Reservation> getReservations() {
-        return reservations;
+    public boolean hasReservations() {
+        return !this.reservations.isEmpty();
     }
 }

@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONObject;
 
@@ -96,7 +97,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     }
 
     //izlaz iz reda
-    private void exitQueue(Reservation reservation, int approx) {
+    private void exitQueue(final Reservation reservation, int approx) {
         RequestQueue volleyQueue = Volley.newRequestQueue(context);
         String url = AppController.API_URL + "/reservations/" + reservation.getId();
 
@@ -112,6 +113,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             public void onResponse(JSONObject response) {
                 Log.d("ExitQueue", "onResponse: " + response);
 
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(reservation.getQueue().getId());
                 new AlertDialog.Builder(context)
                         .setTitle(dialogTitle)
                         .setMessage("Uspješno ste izašli iz reda")

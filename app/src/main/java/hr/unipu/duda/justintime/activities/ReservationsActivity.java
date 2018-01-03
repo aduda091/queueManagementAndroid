@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +73,7 @@ public class ReservationsActivity extends AppCompatActivity {
         });
 
 
-        handler = new Handler();
+        //handler = new Handler();
     }
 
     @Override
@@ -104,7 +105,7 @@ public class ReservationsActivity extends AppCompatActivity {
                         recyclerView.setVisibility(View.GONE);
                         emptyView.setVisibility(View.VISIBLE);
 
-                        handler.removeCallbacks(runnable);
+                        //handler.removeCallbacks(runnable);
                     } else {
                         for (int i = 0; i < reservationsArray.length(); i++) {
                             JSONObject object = reservationsArray.getJSONObject(i);
@@ -126,17 +127,19 @@ public class ReservationsActivity extends AppCompatActivity {
                             reservation.setId(object.getString("_id"));
 
                             reservations.add(reservation);
+                            //osjveži rezervaciju u singletonu (istovremeno provjerava izmjene reda)
+                            AppController.getInstance().updateReservations(reservation);
+
+                            FirebaseMessaging.getInstance().subscribeToTopic(queue.getId());
                         }
 
                         recyclerView.setVisibility(View.VISIBLE);
                         emptyView.setVisibility(View.GONE);
 
-                        handler.postDelayed(runnable, DELAY);
+                        //handler.postDelayed(runnable, DELAY);
                     }
                     adapter = new ReservationAdapter(ReservationsActivity.this, reservations);
                     recyclerView.setAdapter(adapter);
-                    AppController.getInstance().setReservations(reservations);
-
 
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {

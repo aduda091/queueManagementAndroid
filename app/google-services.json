@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "376423806245",
+    "firebase_url": "https://justintimeandroi-1497564015565.firebaseio.com",
+    "project_id": "justintimeandroi-1497564015565",
+    "storage_bucket": "justintimeandroi-1497564015565.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376423806245:android:c0e06093587c403a",
+        "android_client_info": {
+          "package_name": "hr.unipu.duda.justintime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376423806245-g47qf29382buf2v3s6i99qf6n03ecc44.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hr.unipu.duda.justintime",
+            "certificate_hash": "62b4129b02c7c4d8b2fc2386a630a5fba98bf1f8"
+          }
+        },
+        {
+          "client_id": "376423806245-gi8i2apl7jn94bchk2d9icor4m4ppfa0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByEkb7346PQibPPyXzB7JvotieqZdtZUk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376423806245-gi8i2apl7jn94bchk2d9icor4m4ppfa0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
