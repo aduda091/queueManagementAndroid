@@ -2,15 +2,16 @@ package hr.unipu.duda.justintime.services;
 
 
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import hr.unipu.duda.justintime.R;
+import java.util.Map;
+
+import hr.unipu.duda.justintime.model.Queue;
+import hr.unipu.duda.justintime.model.Reservation;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FCM Messaging Service";
@@ -26,24 +27,47 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
-
-
+            updateReservation(remoteMessage.getData());
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody());
-        }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+        }
 
     }
 
-    private void sendNotification(String messageBody) {
+    private void updateReservation(Map<String, String> messageData) {
+        try {
+            //dohvati ID reda i trenutni broj iz notifikacije
+            String queueId = messageData.get("queueId");
+            String currentStr = messageData.get("current");
 
-        
+//            Log.d(TAG, "updateReservation: queueId: " + queueId + " , current:" + currentStr);
+
+            //dohvati korisnikovu rezervaciju po ID-u reda iz kontrolera
+            Reservation oldReservation = AppController.getInstance().getReservationByQueueId(queueId);
+
+//            Log.d(TAG, "oldReservation: " +oldReservation);
+            //stvaranje kopija bitnih polja - inače se po referenci mijenja stara rezervacija
+            Queue queue = new Queue();
+            queue.setId(queueId);
+            queue.setName(oldReservation.getQueue().getName());
+            queue.setCurrent(Integer.parseInt(currentStr));
+
+            Reservation reservation = new Reservation();
+            reservation.setId(oldReservation.getId());
+            reservation.setFacility(oldReservation.getFacility());
+            reservation.setNumber(oldReservation.getNumber());
+            reservation.setQueue(queue);
+
+            //oldReservation.getQueue().setCurrent(Integer.parseInt(currentStr)); // ovo bi mijenjalo original
+            //ažuriraj rezervaciju u kontroleru
+            AppController.getInstance().updateReservations(reservation);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -126,14 +127,20 @@ public class AppController extends Application {
     }
 
     public void updateReservations(Reservation newReservation) {
+        Log.d("Controller update res", "updateReservations: " +newReservation);
         String queueId = newReservation.getQueue().getId();
-        Reservation oldReservation = this.reservations.put(queueId, newReservation);
+        Reservation oldReservation = this.reservations.get(queueId);
+        this.reservations.put(queueId, newReservation);
         if(oldReservation != null) {
-            if (newReservation.getQueue().getCurrent() == newReservation.getNumber()) {
-                //korisnik je upravo na redu, prikaži notifikaciju
+            Log.d("Controller update res", "oldReservation != null, " + newReservation.getQueue().getCurrent() + " ?= " + newReservation.getNumber());
 
+            //korisnik je upravo na redu, prikaži notifikaciju
+            if (newReservation.getQueue().getCurrent() == newReservation.getNumber()) {
+
+                Log.d("Controller update res", "getQueue.getCurrent == getNumber ");
                 //ali samo ako već nije bila prikazana
-                if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
+                //if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
+                    Log.d("Controller update res", "Updating Reservation (notif), " +newReservation);
 
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(newReservation.getQueue().getId());
 
@@ -152,15 +159,26 @@ public class AppController extends Application {
                     //dodir notifikacije je istovremeno uklanja
                     notificationBuilder.setAutoCancel(true);
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                    //napokon, prikaži notifikaciju
+                    //napokon, prikaži notifikaciju todo: id notifikacije nek bude id reda
                     notificationManagerCompat.notify(1, notificationBuilder.build());
+                //}
+            } else {
+                //todo: trenutno ne radi, oldReservation === newReservation
+                //korisnik nije na redu, ali provjeri trenutne brojeve redova
+//                Log.d("Controller update res", "redovi (ding), " + oldReservation.getQueue().getCurrent() + " ?= " + newReservation.getQueue().getCurrent() );
+//                Log.d("Controller update res", "redovi (ding)2, " + oldReservation + " ?= " + newReservation);
+                if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
+                    Log.d("Controller update res", "Updating Reservation (ding), " + newReservation);
+                    //promijenio se trenutni broj u redu, sviraj ding
+                    //todo: korisnik bira želi li ovo čuti?
+                    player.start();
                 }
-            } else if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
-                //promijenio se trenutni broj u redu, sviraj ding
-                //todo: korisnik bira želi li ovo čuti?
-                player.start();
             }
         }
+    }
+
+    public Reservation getReservationByQueueId(String queueId) {
+        return this.reservations.get(queueId);
     }
 
     public boolean hasReservations() {

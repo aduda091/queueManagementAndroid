@@ -59,6 +59,12 @@ public class Queue {
 
     @Override
     public String toString() {
-        return name;
+        return "Queue{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", facility=" + facility +
+                ", next=" + next +
+                ", current=" + current +
+                '}';
     }
 }

@@ -67,4 +67,16 @@ public class Reservation {
     public void setNumber(int number) {
         this.number = number;
     }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id='" + id + '\'' +
+                ", user='" + user + '\'' +
+                ", queue=" + queue +
+                ", facility=" + facility +
+                ", time='" + time + '\'' +
+                ", number=" + number +
+                '}';
+    }
 }
