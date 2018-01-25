@@ -133,14 +133,14 @@ public class ProfileActivity extends AppCompatActivity {
                 Log.d("ProfileResponse", "onResponse: " + response.toString());
                 saveUser(response);
 
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.INVISIBLE);
                 btnSave.setEnabled(true);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("ProfileError", "onResponse: " + error.toString());
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.INVISIBLE);
                 btnSave.setEnabled(true);
                 String message = "";
                 if(error.networkResponse.statusCode == 409) {
