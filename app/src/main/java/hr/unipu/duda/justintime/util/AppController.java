@@ -36,6 +36,8 @@ public class AppController extends Application {
     public static final String FIRSTNAME = "firstName";
     public static final String LASTNAME = "lastName";
     public static final String TOKEN = "token";
+    public static final String PREF_BEEP = "pref_beep";
+    public static final String PREF_PUSH = "pref_push";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -124,6 +126,25 @@ public class AppController extends Application {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(queueId);
         }
         this.reservations.clear();
+    }
+
+    public void updateBeepPref(boolean state) {
+        editor = sharedPreferences.edit();
+        editor.putBoolean(PREF_BEEP, state);
+        editor.apply();
+    }
+
+    public void updatePushPref(boolean state) {
+        editor = sharedPreferences.edit();
+        editor.putBoolean(PREF_PUSH, state);
+        editor.apply();
+    }
+
+    public boolean getBeepPref() {
+        return sharedPreferences.getBoolean(PREF_BEEP, true);
+    }
+    public boolean getPushPref() {
+        return sharedPreferences.getBoolean(PREF_PUSH, true);
     }
 
     public void updateReservations(Reservation newReservation) {

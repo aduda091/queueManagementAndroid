@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -38,6 +40,8 @@ public class ProfileActivity extends AppCompatActivity {
     Button btnLogout;
     ProgressBar progressBar;
 
+    SwitchCompat switchPush, switchBeep;
+
     User user;
     RequestQueue queue;
 
@@ -55,6 +59,8 @@ public class ProfileActivity extends AppCompatActivity {
         btnSave = (Button) findViewById(R.id.btnSave);
         btnLogout = (Button) findViewById(R.id.btnLogout);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        switchPush = (SwitchCompat) findViewById(R.id.switchPushSetting);
+        switchBeep = (SwitchCompat) findViewById(R.id.switchSoundSetting);
 
         queue = Volley.newRequestQueue(this);
 
@@ -70,6 +76,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        switchBeep.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                AppController.getInstance().updateBeepPref(b);
+            }
+        });
+
+        switchPush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                AppController.getInstance().updatePushPref(b);
+            }
+        });
+
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +99,14 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        switchBeep.setChecked(AppController.getInstance().getBeepPref());
+        switchPush.setChecked(AppController.getInstance().getPushPref());
     }
 
     private boolean validateFields() {
