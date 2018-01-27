@@ -103,8 +103,6 @@ public class AppController extends Application {
         HashMap<String, String> header = new HashMap<>();
         header.put("Authorization", getToken());
         return header;
-
-
     }
 
     public boolean isRemembered() {
@@ -119,10 +117,12 @@ public class AppController extends Application {
         editor.remove(FIRSTNAME);
         editor.remove(LASTNAME);
         editor.remove(TOKEN);
+        editor.remove(PREF_PUSH);
+        editor.remove(PREF_BEEP);
         editor.apply();
 
         //otkaži sve pretplate i obriši spremljene rezervacije
-        for(String queueId : this.reservations.keySet()) {
+        for (String queueId : this.reservations.keySet()) {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(queueId);
         }
         this.reservations.clear();
@@ -143,34 +143,30 @@ public class AppController extends Application {
     public boolean getBeepPref() {
         return sharedPreferences.getBoolean(PREF_BEEP, true);
     }
+
     public boolean getPushPref() {
         return sharedPreferences.getBoolean(PREF_PUSH, true);
     }
 
     public void updateReservations(Reservation newReservation) {
-        Log.d("Controller update res", "updateReservations: " +newReservation);
+        Log.d("Controller update res", "updateReservations: " + newReservation);
         String queueId = newReservation.getQueue().getId();
         Reservation oldReservation = this.reservations.get(queueId);
         this.reservations.put(queueId, newReservation);
-        if(oldReservation != null) {
-            Log.d("Controller update res", "oldReservation != null, " + newReservation.getQueue().getCurrent() + " ?= " + newReservation.getNumber());
+        if (oldReservation != null) {
 
             //korisnik je upravo na redu, prikaži notifikaciju (samo ako korisnik želi po postavkama)
             if (newReservation.getQueue().getCurrent() == newReservation.getNumber() && getPushPref()) {
 
-                Log.d("Controller update res", "getQueue.getCurrent == getNumber ");
                 //ali samo ako već nije bila prikazana
-                if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
-                    Log.d("Controller update res", "Updating Reservation (notif), " +newReservation);
+                if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
 
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(newReservation.getQueue().getId());
-
                     NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                             .setSmallIcon(R.drawable.hashtag_white)
                             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                             .setContentTitle(newReservation.getFacility().getName() + " - " + newReservation.getQueue().getName())
                             .setContentText("Vi ste na redu!");
-                    //todo: korisnik bira melodiju i kad se događa notifikacija?
                     //postavke zvuka i svjetla notifikacije
                     notificationBuilder.setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_LIGHTS);
                     //zaslon koji će se prikazati dodirom na notifikaciju
@@ -180,15 +176,12 @@ public class AppController extends Application {
                     //dodir notifikacije je istovremeno uklanja
                     notificationBuilder.setAutoCancel(true);
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                    //napokon, prikaži notifikaciju todo: id notifikacije nek bude id reda
+                    //napokon, prikaži notifikaciju todo: id notifikacije nek bude id reda? ali id mora biti int
                     notificationManagerCompat.notify(1, notificationBuilder.build());
                 }
             } else {
-                //todo: trenutno ne radi, oldReservation === newReservation
                 //korisnik nije na redu, ali provjeri trenutne brojeve redova
-
                 if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
-                    Log.d("Controller update res", "Updating Reservation (ding), " + newReservation);
                     //promijenio se trenutni broj u redu, sviraj ding (samo ako korisnik tako ima u postavkama)
                     if (getBeepPref()) {
                         player.start();

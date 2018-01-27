@@ -124,37 +124,21 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewLogin" />
 
-    <ImageView
-        android:id="@+id/imageButton"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:adjustViewBounds="false"
-        android:cropToPadding="false"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Možete provjeriti stanje u redovima i bez prijave, ali za rezervaciju je potreban korisnički račun"
+        android:textAlignment="center"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/fragment"
-        app:layout_constraintLeft_toLeftOf="@+id/tvRegisterLink"
-        app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:layout_constraintVertical_bias="0.491"
-        app:srcCompat="@drawable/facebook" />
-
-    <ImageView
-        android:id="@+id/imageButton2"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="16dp"
-        android:adjustViewBounds="false"
-        android:cropToPadding="true"
-        app:layout_constraintBottom_toTopOf="@+id/fragment"
-        app:layout_constraintRight_toRightOf="@+id/tvRegisterLink"
-        app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink"
-        app:layout_constraintVertical_bias="0.491"
-        app:srcCompat="@drawable/google" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvRegisterLink" />
 
     <fragment
         android:id="@+id/fragment"
@@ -166,5 +150,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:layout="@layout/fragment_navigation" />
+
+
 
 </android.support.constraint.ConstraintLayout>

@@ -36,16 +36,14 @@ import hr.unipu.duda.justintime.util.AppController;
 
 public class ReservationsActivity extends AppCompatActivity {
 
-    //svakih koliko milisekundi se osvježavaju rezervacije - za potrebe testiranja 10 sekundi,
-    //u produkciji nikako toliko često
-    public static final int DELAY = 10000;
+
     RequestQueue volleyQueue;
     TextView emptyView;
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     List<Reservation> reservations;
     SwipeRefreshLayout swipeContainer;
-    Handler handler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +70,6 @@ public class ReservationsActivity extends AppCompatActivity {
             }
         });
 
-
-        //handler = new Handler();
     }
 
     @Override
@@ -91,8 +87,8 @@ public class ReservationsActivity extends AppCompatActivity {
 
     private void populateReservations() {
         swipeContainer.setRefreshing(true);
-        //dohvaćanje svih rezervacija trenutnog korisnika
 
+        //dohvaćanje svih rezervacija trenutnog korisnika
         reservations = new ArrayList<>();
         String url = AppController.API_URL + "/users/me";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -104,8 +100,6 @@ public class ReservationsActivity extends AppCompatActivity {
                     if (reservationsArray.length() == 0) {
                         recyclerView.setVisibility(View.GONE);
                         emptyView.setVisibility(View.VISIBLE);
-
-                        //handler.removeCallbacks(runnable);
                     } else {
                         for (int i = 0; i < reservationsArray.length(); i++) {
                             JSONObject object = reservationsArray.getJSONObject(i);
@@ -129,14 +123,13 @@ public class ReservationsActivity extends AppCompatActivity {
                             reservations.add(reservation);
                             //osjveži rezervaciju u singletonu (istovremeno provjerava izmjene reda)
                             AppController.getInstance().updateReservations(reservation);
-
+                            //pretplati se na objave trenutnog reda
                             FirebaseMessaging.getInstance().subscribeToTopic(queue.getId());
                         }
 
                         recyclerView.setVisibility(View.VISIBLE);
                         emptyView.setVisibility(View.GONE);
 
-                        //handler.postDelayed(runnable, DELAY);
                     }
                     adapter = new ReservationAdapter(ReservationsActivity.this, reservations);
                     recyclerView.setAdapter(adapter);
