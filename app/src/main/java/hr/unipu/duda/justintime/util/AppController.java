@@ -155,12 +155,12 @@ public class AppController extends Application {
         if(oldReservation != null) {
             Log.d("Controller update res", "oldReservation != null, " + newReservation.getQueue().getCurrent() + " ?= " + newReservation.getNumber());
 
-            //korisnik je upravo na redu, prikaži notifikaciju
-            if (newReservation.getQueue().getCurrent() == newReservation.getNumber()) {
+            //korisnik je upravo na redu, prikaži notifikaciju (samo ako korisnik želi po postavkama)
+            if (newReservation.getQueue().getCurrent() == newReservation.getNumber() && getPushPref()) {
 
                 Log.d("Controller update res", "getQueue.getCurrent == getNumber ");
                 //ali samo ako već nije bila prikazana
-                //if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
+                if(oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
                     Log.d("Controller update res", "Updating Reservation (notif), " +newReservation);
 
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(newReservation.getQueue().getId());
@@ -182,17 +182,17 @@ public class AppController extends Application {
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                     //napokon, prikaži notifikaciju todo: id notifikacije nek bude id reda
                     notificationManagerCompat.notify(1, notificationBuilder.build());
-                //}
+                }
             } else {
                 //todo: trenutno ne radi, oldReservation === newReservation
                 //korisnik nije na redu, ali provjeri trenutne brojeve redova
-//                Log.d("Controller update res", "redovi (ding), " + oldReservation.getQueue().getCurrent() + " ?= " + newReservation.getQueue().getCurrent() );
-//                Log.d("Controller update res", "redovi (ding)2, " + oldReservation + " ?= " + newReservation);
+
                 if (oldReservation.getQueue().getCurrent() != newReservation.getQueue().getCurrent()) {
                     Log.d("Controller update res", "Updating Reservation (ding), " + newReservation);
-                    //promijenio se trenutni broj u redu, sviraj ding
-                    //todo: korisnik bira želi li ovo čuti?
-                    player.start();
+                    //promijenio se trenutni broj u redu, sviraj ding (samo ako korisnik tako ima u postavkama)
+                    if (getBeepPref()) {
+                        player.start();
+                    }
                 }
             }
         }

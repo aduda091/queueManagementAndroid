@@ -68,7 +68,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             //korisnik je upravo na redu
             holder.approximateWait.setText("Upravo ste na redu!");
             holder.exitButton.setImageResource(android.R.drawable.ic_menu_directions);
-            holder.exitButton.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+            holder.exitButton.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(0, 100, 0)));
             dialogTitle = "Hvala";
             dialogMessage = "Gotovi ste s korištenjem usluge?";
         } else {
@@ -102,7 +102,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         String url = AppController.API_URL + "/reservations/" + reservation.getId();
 
         final String dialogTitle;
-        if(approx == 0) {
+        if (approx == 0) {
             dialogTitle = "Hvala";
         } else {
             dialogTitle = "Rezervacija otkazana";
