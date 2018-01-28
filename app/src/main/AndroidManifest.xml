@@ -36,11 +36,8 @@
         <activity
             android:name=".activities.ProfileActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.ReservationsActivity"
-            android:launchMode="singleInstance" />
+        <activity android:name=".activities.ReservationsActivity" />
         <activity
             android:name=".activities.QueueDetailActivity"
             android:parentActivityName=".activities.QueueListActivity"

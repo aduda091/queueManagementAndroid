@@ -70,12 +70,12 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder>{
         public void onClick(View view) {
             int position = getAdapterPosition();
             Queue queue = queues.get(position);
-            //korisnik je već u redu kojeg je dodirnuo
+            /*korisnik je već u redu kojeg je dodirnuo
             if(AppController.getInstance().hasReservation(queue.getId())) {
                 Intent intent = new Intent(context, ReservationsActivity.class);
                 context.startActivity(intent);
             } else {
-                //korisnik nije već u tom redu
+                //korisnik nije već u tom redu*/
                 Intent intent = new Intent(context, QueueDetailActivity.class);
                 //todo: zamijeniti sa serijalizacijom/bundle
                 intent.putExtra("queueId", queue.getId());
@@ -85,7 +85,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder>{
                 intent.putExtra("queuePriority", queue.getCurrent());
                 intent.putExtra("queueNext", queue.getNext());
                 context.startActivity(intent);
-            }
+            //}
         }
     }
 }
