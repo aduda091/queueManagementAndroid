@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -37,7 +39,6 @@ public class ProfileActivity extends AppCompatActivity {
     EditText etLastName;
     EditText etEmail;
     Button btnSave;
-    Button btnLogout;
     ProgressBar progressBar;
 
     SwitchCompat switchPush, switchBeep;
@@ -57,7 +58,6 @@ public class ProfileActivity extends AppCompatActivity {
         etLastName = (EditText) findViewById(R.id.etLastName);
         etEmail = (EditText) findViewById(R.id.etEmail);
         btnSave = (Button) findViewById(R.id.btnSave);
-        btnLogout = (Button) findViewById(R.id.btnLogout);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         switchPush = (SwitchCompat) findViewById(R.id.switchPushSetting);
         switchBeep = (SwitchCompat) findViewById(R.id.switchSoundSetting);
@@ -90,15 +90,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppController.getInstance().logout();
-                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+
+    }
+
+    public void logout(MenuItem item) {
+        AppController.getInstance().logout();
+        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -107,6 +106,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         switchBeep.setChecked(AppController.getInstance().getBeepPref());
         switchPush.setChecked(AppController.getInstance().getPushPref());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        return true;
     }
 
     private boolean validateFields() {
