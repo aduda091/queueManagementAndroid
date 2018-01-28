@@ -199,4 +199,7 @@ public class AppController extends Application {
         return this.reservations.containsKey(queueId);
     }
 
+    public void removeReservation(String queueId) {
+        this.reservations.remove(queueId);
+    }
 }

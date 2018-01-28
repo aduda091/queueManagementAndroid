@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -67,6 +68,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         if (approx == 0) {
             //korisnik je upravo na redu
             holder.approximateWait.setText("Upravo ste na redu!");
+            holder.approximateWait.setTypeface(holder.approximateWait.getTypeface(), Typeface.BOLD);
+            holder.approximateWait.setAllCaps(true);
             holder.exitButton.setImageResource(android.R.drawable.ic_menu_directions);
             holder.exitButton.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(0, 100, 0)));
             dialogTitle = "Hvala";
@@ -112,7 +115,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("ExitQueue", "onResponse: " + response);
-
+                //otkaži pretplatu na izmjene ovog reda
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(reservation.getQueue().getId());
                 new AlertDialog.Builder(context)
                         .setTitle(dialogTitle)
@@ -120,8 +123,9 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         .setPositiveButton("U redu", null)
                         .create().show();
 
-                //AppController.getInstance().updateReservations();
-                //pričekaj par sekundi pa preusmjeri korisnika
+                //ukloni rezervaciju i iz kontrolera
+                AppController.getInstance().removeReservation(reservation.getQueue().getId());
+                //pričekaj malo pa preusmjeri korisnika
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
