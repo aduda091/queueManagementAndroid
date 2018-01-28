@@ -16,7 +16,9 @@ import java.util.List;
 import hr.unipu.duda.justintime.R;
 import hr.unipu.duda.justintime.activities.QueueDetailActivity;
 import hr.unipu.duda.justintime.activities.QueueListActivity;
+import hr.unipu.duda.justintime.activities.ReservationsActivity;
 import hr.unipu.duda.justintime.model.Queue;
+import hr.unipu.duda.justintime.util.AppController;
 
 public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder>{
 
@@ -68,15 +70,22 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder>{
         public void onClick(View view) {
             int position = getAdapterPosition();
             Queue queue = queues.get(position);
-            Intent intent = new Intent(context, QueueDetailActivity.class);
-            //todo: zamijeniti sa serijalizacijom/bundle
-            intent.putExtra("queueId", queue.getId());
-            intent.putExtra("queueName", queue.getName());
-            intent.putExtra("facilityId", queue.getFacility().getId());
-            intent.putExtra("facilityName", queue.getFacility().getName());
-            intent.putExtra("queuePriority", queue.getCurrent());
-            intent.putExtra("queueNext", queue.getNext());
-            context.startActivity(intent);
+            //korisnik je već u redu kojeg je dodirnuo
+            if(AppController.getInstance().hasReservation(queue.getId())) {
+                Intent intent = new Intent(context, ReservationsActivity.class);
+                context.startActivity(intent);
+            } else {
+                //korisnik nije već u tom redu
+                Intent intent = new Intent(context, QueueDetailActivity.class);
+                //todo: zamijeniti sa serijalizacijom/bundle
+                intent.putExtra("queueId", queue.getId());
+                intent.putExtra("queueName", queue.getName());
+                intent.putExtra("facilityId", queue.getFacility().getId());
+                intent.putExtra("facilityName", queue.getFacility().getName());
+                intent.putExtra("queuePriority", queue.getCurrent());
+                intent.putExtra("queueNext", queue.getNext());
+                context.startActivity(intent);
+            }
         }
     }
 }

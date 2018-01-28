@@ -195,7 +195,8 @@ public class AppController extends Application {
         return this.reservations.get(queueId);
     }
 
-    public boolean hasReservations() {
-        return !this.reservations.isEmpty();
+    public boolean hasReservation(String queueId) {
+        return this.reservations.containsKey(queueId);
     }
+
 }
