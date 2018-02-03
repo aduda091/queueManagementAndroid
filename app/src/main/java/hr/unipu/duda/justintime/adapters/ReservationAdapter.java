@@ -77,7 +77,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         } else {
             holder.approximateWait.setText("Očekivano vrijeme čekanja: " + approx * 5 + " minuta");
             dialogTitle = "Potvrda izlaza";
-            dialogMessage = "Sigurno želite iaći iz reda?";
+            dialogMessage = "Sigurno želite izaći iz reda?";
         }
 
         holder.exitButton.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +135,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                     }
-                }, 1000);
+                }, 2000);
             }
         }, new Response.ErrorListener() {
             @Override

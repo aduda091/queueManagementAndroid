@@ -46,8 +46,16 @@ public class NavigationFragment extends Fragment {
         navProfile = (Button) view.findViewById(R.id.navProfile);
 
         //boja teksta gumba u navigaciji ovisi o trenutnoj aktivnosti
-        int defaultColor = getResources().getColor(R.color.colorNavigationDefault, null);
-        int selectedColor = getResources().getColor(R.color.colorNavigationSelected, null);
+        int defaultColor = 0;
+        int selectedColor = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            defaultColor = getResources().getColor(R.color.colorNavigationDefault, null);
+            selectedColor = getResources().getColor(R.color.colorNavigationSelected, null);
+        } else {
+            defaultColor = getResources().getColor(R.color.colorNavigationDefault);
+            selectedColor = getResources().getColor(R.color.colorNavigationSelected);
+        }
+
 
         final String currentActivityName = getActivity().getClass().getSimpleName();
 
