@@ -157,7 +157,14 @@ public class FacilityDetailActivity extends AppCompatActivity {
                 webView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-                        webView.loadUrl("https://www.google.hr/maps/place/" + urlAdress);
+                        //ne radi više
+                        //webView.loadUrl("https://www.google.hr/maps/place/" + urlAdress);
+                        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + urlAdress);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                            startActivity(mapIntent);
+                        }
                         return true;
                     }
                 });
